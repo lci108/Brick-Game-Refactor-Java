@@ -41,6 +41,8 @@ public class Block implements Serializable {
     public static int BLOCK_STAR = 101;
     public static int BLOCK_HEART = 102;
 
+    public static int BLOCK_MYSTERY =103;
+
 
     public Block(int row, int column, Color color, int type) {
         this.row = row;
@@ -73,7 +75,11 @@ public class Block implements Serializable {
             Image image = new Image("star.jpg");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
-        } else {
+        } else if (type == BLOCK_MYSTERY) {
+            Image image = new Image("mystery_block.png");
+            ImagePattern pattern = new ImagePattern(image);
+            rect.setFill(pattern);
+        }else{
             rect.setFill(color);
         }
 

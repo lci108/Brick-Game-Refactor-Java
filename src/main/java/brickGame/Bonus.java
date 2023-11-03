@@ -7,15 +7,19 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 import java.util.Random;
 
+
 public class Bonus implements Serializable {
-    public Rectangle choco;
+    public Rectangle block;
 
     public double x;
     public double y;
     public long timeCreated;
     public boolean taken = false;
 
-    public Bonus(int row, int column) {
+    private  int blockType;
+
+    public Bonus(int row, int column , int blockType) {
+        this.blockType = blockType;
         x = (column * (Block.getWidth())) + Block.getPaddingH() + (Block.getWidth() / 2) - 15;
         y = (row * (Block.getHeight())) + Block.getPaddingTop() + (Block.getHeight() / 2) - 15;
 
@@ -23,22 +27,27 @@ public class Bonus implements Serializable {
     }
 
     private void draw() {
-        choco = new Rectangle();
-        choco.setWidth(30);
-        choco.setHeight(30);
-        choco.setX(x);
-        choco.setY(y);
+        block = new Rectangle();
+        block.setWidth(30);
+        block.setHeight(30);
+        block.setX(x);
+        block.setY(y);
 
-        String url;
-        if (new Random().nextInt(20) % 2 == 0) {
-            url = "bonus1.png";
-        } else {
-            url = "bonus2.png";
-        }
-
-        choco.setFill(new ImagePattern(new Image(url)));
+        // Decide on the image to use based on the block type
+        String url = chooseImageForType(this.blockType);
+        block.setFill(new ImagePattern(new Image(url)));
     }
-
+    private String chooseImageForType(int blockType) {
+        if (blockType == Block.BLOCK_CHOCO) {
+            // Randomly return one of the bonus images
+            return new Random().nextInt(20) % 2 == 0 ? "bonus1.png" : "bonus2.png";
+        } else if (blockType == Block.BLOCK_MYSTERY) {
+            // Return the mystery image URL
+            return "mystery.png";
+        }
+        // If no known block type, return null or perhaps a default image
+        return null;
+    }
 
 
 }
