@@ -190,7 +190,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
 
     }
-
+    //made the game easier for testing with this CHANCE
     private static final int CHANCE_DIVISOR = 500;
     private static final int CHOCO_CHANCE = 50; // 0-49 for chocolate (10%)
     private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
