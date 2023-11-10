@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 
+
 public class Bonus implements Serializable {
     public Rectangle block;
 

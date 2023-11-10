@@ -260,32 +260,45 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     float oldXBreak;
-
+    //vreated new volataile boolean so that other threads can be seen , if want to modify next time easier
+    private volatile boolean breakStopped = false;
     private void move(final int direction) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int sleepTime = 4;
+
                 //basically move 30 small steps with sleep in between and check edge
                 //refactored a little
-                for (int i = 0; i < 30; i++) {
-                    if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
-                        xBreak++;
-                    } else if(xBreak > 0 && direction == LEFT) {
-                        xBreak--;
-                    }
-                    else{
-                        break;
-                    }
-                    centerBreakX = xBreak + halfBreakWidth;
+                if (breakStopped) {
+                    // Break is stopped, wait for 5 seconds (5000 milliseconds)
                     try {
-                        Thread.sleep(sleepTime);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    // Resume break movement after the penalty duration
+                    breakStopped = false;
+                }
+                else{
+                    for (int i = 0; i < 30; i++) {
+                        if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
+                            xBreak++;
+                        } else if (xBreak > 0 && direction == LEFT) {
+                            xBreak--;
+                        } else {
+                            break;
+                        }
+                        centerBreakX = xBreak + halfBreakWidth;
+                        try {
+                            Thread.sleep(sleepTime);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
                         sleepTime += 2; // Start deceleration with a small increment
 
+                    }
                 }
             }
         }).start();
@@ -302,6 +315,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("ball.png")));
+
     }
 
     private void initBreak() {
@@ -438,28 +452,34 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         //Wall Colide
 
         if (colideToRightWall) {
+
             goRightBall = false;
         }
 
         if (colideToLeftWall) {
+
             goRightBall = true;
         }
 
         //Block Colide
 
         if (colideToRightBlock) {
-            goRightBall = true;
+
+            goRightBall = false;
         }
 
         if (colideToLeftBlock) {
+
             goRightBall = true;
         }
 
         if (colideToTopBlock) {
+
             goDownBall = false;
         }
 
         if (colideToBottomBlock) {
+
             goDownBall = true;
         }
 
@@ -792,9 +812,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 System.out.println("Mystery Gift!");
                 mystery.taken = true;
                 mystery.block.setVisible(false);
-                score -= 1;
-                new Score().show(mystery.x, mystery.y, -1, this);
+                if (Math.random() < 0.1) {
+                    score -= 1;
+                    new Score().show(mystery.x, mystery.y, -1, this);
+                }else {
+                    System.out.println("Oh No ! FREEZE for 5s");
+                    breakStopped = true;
+                }
+
+
             }
+            //gravity
             mystery.y += ((time - mystery.timeCreated) / 1000.000) + 1.000;
         }
 
