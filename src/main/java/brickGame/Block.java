@@ -8,6 +8,8 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 
+import static brickGame.Main.ballRadius;
+
 public class Block implements Serializable {
     private static Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
 
@@ -86,30 +88,48 @@ public class Block implements Serializable {
     }
 
 
+    // Assuming the blocks are axis-aligned rectangles and the ball is a circle
+    // Assuming the blocks are axis-aligned rectangles and the ball is a circle
     public int checkHitToBlock(double xBall, double yBall) {
 
         if (isDestroyed) {
             return NO_HIT;
         }
 
-        if (xBall >= x && xBall <= x + width && yBall == y + height) {
-            return HIT_BOTTOM;
+        double ballTop = yBall - ballRadius;
+        double ballBottom = yBall + ballRadius;
+        double ballLeft = xBall - ballRadius;
+        double ballRight = xBall + ballRadius;
+
+        // Check for collision with the bottom of the block
+        if (ballRight > x && ballLeft < x + width) { // Overlapping in X
+            if (ballBottom > y && ballTop < y + height) { // Overlapping in Y
+                // Find out the depth of overlap in each direction
+                double overlapBottom = ballBottom - y;
+                double overlapTop = (y + height) - ballTop;
+                double overlapLeft = ballRight - x;
+                double overlapRight = (x + width) - ballLeft;
+
+                // Find the minimum overlap which tells us which side was hit
+                double minOverlap = Math.min(Math.min(overlapBottom, overlapTop), Math.min(overlapLeft, overlapRight));
+
+                // Return the side where the minimum overlap occurred
+                if (minOverlap == overlapBottom) {
+                    return HIT_TOP; // Ball's bottom hit the block's top
+                } else if (minOverlap == overlapTop) {
+                    return HIT_BOTTOM; // Ball's top hit the block's bottom
+                } else if (minOverlap == overlapLeft) {
+                    return HIT_RIGHT; // Ball's left hit the block's right
+                } else if (minOverlap == overlapRight) {
+                    return HIT_LEFT; // Ball's right hit the block's left
+                }
+            }
         }
 
-        if (xBall >= x && xBall <= x + width && yBall == y) {
-            return HIT_TOP;
-        }
-
-        if (yBall >= y && yBall <= y + height && xBall == x + width) {
-            return HIT_RIGHT;
-        }
-
-        if (yBall >= y && yBall <= y + height && xBall == x) {
-            return HIT_LEFT;
-        }
-
-        return NO_HIT;
+        return NO_HIT; // No collision occurred
     }
+
+
 
     public static int getPaddingTop() {
         return block.paddingTop;

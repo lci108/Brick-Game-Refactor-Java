@@ -47,7 +47,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean isExistHeartBlock = false;
 
     private Rectangle rect;
-    private int       ballRadius = 10;
+    public static int  ballRadius = 10;
 
     private int destroyedBlockCount = 0;
 
