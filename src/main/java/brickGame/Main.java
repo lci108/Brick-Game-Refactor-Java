@@ -1,5 +1,4 @@
 package brickGame;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -53,7 +52,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private double v = 1.000;
 
-    private int  heart    = 3;
+    private int  heart    = 30000;
     private int  score    = 0;
     private long time     = 0;
     private long hitTime  = 0;
@@ -251,7 +250,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 move(RIGHT);
                 break;
             case DOWN:
-                //setPhysicsToBall();
+                engine.stop();
+                for(int i=3; i>=1 ; i--){
+                    try {
+                        new Score().showMessage(i+"s", this);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                engine.start();
                 break;
             case S:
                 saveGame();
@@ -296,7 +305,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                             e.printStackTrace();
                         }
 
-                        sleepTime += 2; // Start deceleration with a small increment
+                        //sleepTime += 2; // Start deceleration with a small increment
 
                     }
                 }
@@ -342,8 +351,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean colideToLeftBlock           = false;
     private boolean colideToTopBlock            = false;
 
-    private double vX = 1.000;
-    private double vY = 1.000;
+    private double vX = 20.000;
+    private double vY = 20.000;
 
 
     private void resetColideFlags() {

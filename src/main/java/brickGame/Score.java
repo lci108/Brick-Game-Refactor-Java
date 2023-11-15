@@ -31,9 +31,12 @@ public class Score {
             public void run() {
                 for (int i = 0; i < 21; i++) {
                     try {
-                        label.setScaleX(i);
-                        label.setScaleY(i);
-                        label.setOpacity((20 - i) / 20.0);
+                        final int finalI = i;
+                        Platform.runLater(() -> {
+                            label.setScaleX(finalI);
+                            label.setScaleY(finalI);
+                            label.setOpacity((20 - finalI) / 20.0);
+                        });
                         Thread.sleep(15);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -41,6 +44,7 @@ public class Score {
                 }
             }
         }).start();
+
     }
 
     public void showMessage(String message, final Main main) {
