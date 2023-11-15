@@ -67,6 +67,7 @@ public class GameEngine {
         PhysicsCalculation();
         TimeStart();
         isStopped = false;
+
     }
 
     public void stop() {

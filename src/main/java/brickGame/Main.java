@@ -88,6 +88,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     private boolean loadFromSave = false;
 
+    private Label pauseLabel;
+
+
 
 
 
@@ -95,6 +98,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     Stage  primaryStage;
     Button load    = null;
     Button newGame = null;
+
 
     @Override
     //here is entry point
@@ -122,7 +126,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             newGame.setTranslateX(220);
             newGame.setTranslateY(340);
 
+
+
         }
+        pauseLabel = new Label("\t Game is Paused \n Press Space to Resume!");
+        pauseLabel.setTranslateX(160); // Adjust the position as needed
+        pauseLabel.setTranslateY(300);
+        pauseLabel.setVisible(false); // Initially invisible
 
         root = new Pane();
         scoreLabel = new Label("Score: " + score);
@@ -131,13 +141,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         heartLabel = new Label("Heart : " + heart);
         heartLabel.setTranslateX(sceneWidth - 70);
         if (loadFromSave == false) {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, newGame, load);
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, pauseLabel ,newGame, load );
         } else {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel);
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel , pauseLabel );
         }
         for (Block block : blocks) {
             root.getChildren().add(block.rect);
         }
+
         Scene scene = new Scene(root, sceneWidth, sceneHeigt);
         scene.getStylesheets().add("style.css");
         //go to handle method
@@ -146,6 +157,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         primaryStage.setTitle("Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
 
         if (loadFromSave == false) {
             //level 2-17
@@ -162,7 +174,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 @Override
                 public void handle(ActionEvent event) {
                     loadGame();
-
                     load.setVisible(false);
                     newGame.setVisible(false);
                 }
@@ -180,6 +191,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     newGame.setVisible(false);
                 }
             });
+
+
         } else {
             engine = new GameEngine();
             engine.setOnAction(this);
@@ -234,7 +247,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 //end of initBoard
 
-
+    private boolean isGamePaused = false;
     public static void main(String[] args) {
         launch(args);
     }
@@ -249,24 +262,25 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                 move(RIGHT);
                 break;
-            case DOWN:
-                engine.stop();
-                for(int i=3; i>=1 ; i--){
-                    try {
-                        new Score().showMessage(i+"s", this);
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
+            case SPACE:
+                if (!isGamePaused) {
+                    engine.stop(); // Stop the game engine
+                    isGamePaused = true; // Set the flag to indicate the game is paused
+                    pauseLabel.setVisible(true);
+                } else {
+                    engine.start(); // Restart the game engine
+                    isGamePaused = false; // Set the flag to indicate the game is running
+                    pauseLabel.setVisible(false);
                 }
-                engine.start();
+
                 break;
             case S:
                 saveGame();
                 break;
         }
     }
+
+
 
     float oldXBreak;
     //vreated new volataile boolean so that other threads can be seen , if want to modify next time easier
