@@ -63,10 +63,17 @@ public class Score {
             @Override
             public void run() {
                 for (int i = 0; i < 21; i++) {
+                    final int index = i;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            label.setScaleX(Math.abs(index - 10));
+                            label.setScaleY(Math.abs(index - 10));
+                            label.setOpacity((20 - index) / 20.0);
+                        }
+                    });
+
                     try {
-                        label.setScaleX(Math.abs(i-10));
-                        label.setScaleY(Math.abs(i-10));
-                        label.setOpacity((20 - i) / 20.0);
                         Thread.sleep(15);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -75,6 +82,7 @@ public class Score {
             }
         }).start();
     }
+
 
     public void showGameOver(final Main main) {
         Platform.runLater(new Runnable() {

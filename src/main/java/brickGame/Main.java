@@ -208,7 +208,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
     private static final int STAR_CHANCE = 175; // 150-174 for star (5%)
 
-    private static final int MYSTERY_CHANCE =200 ; //175 - 199 for mystery (5%)
+    private static final int MYSTERY_CHANCE =500 ; //175 - 199 for mystery (5%)
 
 //refactored initBoard and changed the percentage
     private void initBoard() {
@@ -279,6 +279,26 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 break;
         }
     }
+    private void handlePenalty() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int countdown = 5; // 5-second countdown
+                while (countdown > 0) {
+                    System.out.println("Penalty time remaining: " + countdown + " seconds");
+                    try {
+                        Thread.sleep(1000); // Wait for 1 second
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    countdown--;
+                }
+                System.out.println("You can Move Now");
+                breakStopped = false; // Resume break movement after the penalty duration
+            }
+        }).start();
+    }
+
 
 
 
@@ -294,17 +314,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 //basically move 30 small steps with sleep in between and check edge
                 //refactored a little
                 if (breakStopped) {
-                    // Break is stopped, wait for 5 seconds (5000 milliseconds)
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // Resume break movement after the penalty duration
-                    breakStopped = false;
+                    return;
                 }
                 else{
-                    for (int i = 0; i < 30; i++) {
+                    ;for (int i = 0; i < 40; i++) {
                         if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
                             xBreak++;
                         } else if (xBreak > 0 && direction == LEFT) {
@@ -365,8 +378,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean colideToLeftBlock           = false;
     private boolean colideToTopBlock            = false;
 
-    private double vX = 20.000;
-    private double vY = 20.000;
+    private double vX = 1.000;
+    private double vY = 1.000;
 
 
     private void resetColideFlags() {
@@ -841,6 +854,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 }else {
                     System.out.println("Oh No ! FREEZE for 5s");
                     breakStopped = true;
+                    handlePenalty();
                 }
 
 
@@ -859,3 +873,5 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         this.time = time;
     }
 }
+
+
