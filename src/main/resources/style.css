@@ -1,16 +1,20 @@
 .root {
-    -fx-background-image: url("bg.jpg");
+    -fx-background-image: url("bg.png");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
 }
 
 .goldRoot {
-    -fx-background-color: #4b4a08;
+     -fx-background-image: url("bg2.png");
+     -fx-background-repeat: no-repeat;
+     -fx-background-size: cover;
+}
+.label {
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 200%, #DA70D6, #8A2BE2); /* Gradient text fill from orchid to blue violet */
+    -fx-padding: 8px;              /* Padding around the label */
+    -fx-font-size: 15px;           /* Font size */
+    -fx-font-weight: bold;         /* Bold font weight */
+    -fx-effect: dropshadow( Gaussian , rgba(0,0,0,0.7) , 5, 0.0 , 0 , 1 ); /* Soft drop shadow for depth */
 }
 
-.label {
-    -fx-text-fill: #FFF;
-    -fx-label-padding: 8px;
-    -fx-font-size: 15px;
-}
 

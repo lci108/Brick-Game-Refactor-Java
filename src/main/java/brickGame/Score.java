@@ -85,45 +85,50 @@ public class Score {
 
 
     public void showGameOver(final Main main) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Label label = new Label("Game Over :(");
-                label.setTranslateX(200);
-                label.setTranslateY(250);
-                label.setScaleX(2);
-                label.setScaleY(2);
+        Platform.runLater(() -> {
+            // Display the final score
+            Label scoreLabel = new Label("Your Score: " + main.score);
+            scoreLabel.setTranslateX(220);
+            scoreLabel.setTranslateY(200);
+            scoreLabel.setScaleX(3);
+            scoreLabel.setScaleY(3);
 
-                Button restart = new Button("Restart");
-                restart.setTranslateX(220);
-                restart.setTranslateY(300);
-                restart.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        main.restartGame();
-                    }
-                });
+            // Game Over label
+            Label gameOverLabel = new Label("Game Over :(");
+            gameOverLabel.setTranslateX(220);
+            gameOverLabel.setTranslateY(250);
+            gameOverLabel.setScaleX(2);
+            gameOverLabel.setScaleY(2);
 
-                main.root.getChildren().addAll(label, restart);
+            // Restart button
+            Button restart = new Button("Restart");
+            restart.setTranslateX(240);
+            restart.setTranslateY(300);
+            restart.setOnAction(event -> main.restartGame());
 
-            }
+            main.root.getChildren().addAll(scoreLabel, gameOverLabel, restart);
         });
     }
 
+
     public void showWin(final Main main) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Label label = new Label("You Win :)");
-                label.setTranslateX(200);
-                label.setTranslateY(250);
-                label.setScaleX(2);
-                label.setScaleY(2);
+        Platform.runLater(() -> {
+            // Display the final score
+            Label scoreLabel = new Label("Your Score: " + main.score);
+            scoreLabel.setTranslateX(220);
+            scoreLabel.setTranslateY(200);
+            scoreLabel.setScaleX(3);
+            scoreLabel.setScaleY(3);
 
+            // Win label
+            Label winLabel = new Label("You Win :)");
+            winLabel.setTranslateX(220);
+            winLabel.setTranslateY(250);
+            winLabel.setScaleX(2);
+            winLabel.setScaleY(2);
 
-                main.root.getChildren().addAll(label);
-
-            }
+            main.root.getChildren().addAll(scoreLabel, winLabel);
         });
     }
 }
+
