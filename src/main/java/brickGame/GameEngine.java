@@ -1,116 +1,87 @@
 package brickGame;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class GameEngine {
 
     private OnAction onAction;
-    private int fps = 15;
-    private Thread updateThread;
-    private Thread physicsThread;
-    public boolean isStopped = true;
+    private volatile int fps = 15;
+    private Timeline updateTimeline;
+    private Timeline physicsTimeline;
+    private volatile boolean isStopped = true;
+
+    private long time = 0;
+    private Timeline timeTimeline;
+    private final Object timeLock = new Object();
 
     public void setOnAction(OnAction onAction) {
         this.onAction = onAction;
     }
 
-    /**
-     * @param fps set fps and we convert it to millisecond
-     */
     public void setFps(int fps) {
-        this.fps = (int) 1000 / fps;
+        if (fps <= 0) {
+            throw new IllegalArgumentException("FPS must be greater than 0");
+        }
+        this.fps = 1000 / fps;
     }
 
-    private synchronized void Update() {
-        updateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!updateThread.isInterrupted()) {
-                    try {
-                        onAction.onUpdate();
-                        Thread.sleep(fps);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        updateThread.start();
+    private void update() {
+        updateTimeline = new Timeline(new KeyFrame(Duration.millis(fps), e -> onAction.onUpdate()));
+        updateTimeline.setCycleCount(Timeline.INDEFINITE);
+        updateTimeline.play();
     }
 
-    private void Initialize() {
+    private void initialize() {
         onAction.onInit();
     }
 
-    private synchronized void PhysicsCalculation() {
-        physicsThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!physicsThread.isInterrupted()) {
-                    try {
-                        onAction.onPhysicsUpdate();
-                        Thread.sleep(fps);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        physicsThread.start();
-
+    private void physicsCalculation() {
+        physicsTimeline = new Timeline(new KeyFrame(Duration.millis(fps), e -> onAction.onPhysicsUpdate()));
+        physicsTimeline.setCycleCount(Timeline.INDEFINITE);
+        physicsTimeline.play();
     }
 
     public void start() {
-        time = 0;
-        Initialize();
-        Update();
-        PhysicsCalculation();
-        TimeStart();
+        synchronized (timeLock) {
+            time = 0;
+        }
         isStopped = false;
-
+        initialize();
+        update();
+        physicsCalculation();
+        timeStart();
     }
 
     public void stop() {
-        if (!isStopped) {
-            isStopped = true;
-            updateThread.stop();
-            physicsThread.stop();
-            timeThread.stop();
+        isStopped = true;
+        if (updateTimeline != null) {
+            updateTimeline.stop();
+        }
+        if (physicsTimeline != null) {
+            physicsTimeline.stop();
+        }
+        if (timeTimeline != null) {
+            timeTimeline.stop();
         }
     }
 
-
-    private long time = 0;
-
-    private Thread timeThread;
-
-    private void TimeStart() {
-        timeThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        time++;
-                        onAction.onTime(time);
-                        Thread.sleep(1);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    private void timeStart() {
+        timeTimeline = new Timeline(new KeyFrame(Duration.millis(1), e -> {
+            synchronized (timeLock) {
+                time++;
             }
-        });
-        timeThread.start();
+            onAction.onTime(time);
+        }));
+        timeTimeline.setCycleCount(Timeline.INDEFINITE);
+        timeTimeline.play();
     }
-
 
     public interface OnAction {
         void onUpdate();
-
         void onInit();
-
         void onPhysicsUpdate();
-
         void onTime(long time);
     }
-
 }

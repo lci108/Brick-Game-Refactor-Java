@@ -1,4 +1,6 @@
 package brickGame;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +16,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -46,14 +49,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean isExistHeartBlock = false;
 
     private Rectangle rect;
-    public static int  ballRadius = 15;
+    public static int  ballRadius = 10;
 
     private int destroyedBlockCount = 0;
 
     private double v = 1.000;
 
-    private int  heart    = 10000;
-    public int  score    = 0;
+    private int  heart    = 30000;
+    private int  score    = 0;
     private long time     = 0;
     private long hitTime  = 0;
     private long goldTime = 0;
@@ -208,9 +211,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
     private static final int STAR_CHANCE = 175; // 150-174 for star (5%)
 
-    private static final int MYSTERY_CHANCE =200 ; //175 - 199 for mystery (5%)
+    private static final int MYSTERY_CHANCE =500 ; //175 - 199 for mystery (5%)
 
-//refactored initBoard and changed the percentage
+    //refactored initBoard and changed the percentage
     private void initBoard() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < level + 1; j++) {
@@ -279,24 +282,42 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 break;
         }
     }
+    private Label penaltyLabel;
+
+    private boolean isPenaltyActive = false;
+
     private void handlePenalty() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int countdown = 5; // 5-second countdown
-                while (countdown > 0) {
-                    System.out.println("Penalty time remaining: " + countdown + " seconds");
-                    try {
-                        Thread.sleep(1000); // Wait for 1 second
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    countdown--;
-                }
-                System.out.println("You can Move Now");
+        if (isPenaltyActive) {
+            // If a penalty is already active, don't start a new one
+            return;
+        }
+
+        isPenaltyActive = true;
+
+        penaltyLabel = new Label();
+        penaltyLabel.setTranslateX(200); // Set X position
+        penaltyLabel.setTranslateY(300); // Set Y position
+        root.getChildren().add(penaltyLabel);
+
+        Timeline penaltyTimeline = new Timeline();
+        final int countdownTime = 5;
+        final int[] remainingTime = {countdownTime + 1}; // Start from countdownTime + 1
+
+        KeyFrame frame = new KeyFrame(Duration.seconds(1), e -> {
+            remainingTime[0]--; // Decrement remaining time
+            penaltyLabel.setText("Penalty: " + remainingTime[0] + " seconds");
+
+            if (remainingTime[0] <= 0) {
+                penaltyTimeline.stop();
+                penaltyLabel.setVisible(false);
+                isPenaltyActive = false; // Reset the penalty flag
                 breakStopped = false; // Resume break movement after the penalty duration
             }
-        }).start();
+        });
+
+        penaltyTimeline.getKeyFrames().add(frame);
+        penaltyTimeline.setCycleCount(countdownTime + 1); // Run for countdownTime + 1 seconds
+        penaltyTimeline.play();
     }
 
 
@@ -378,8 +399,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean colideToLeftBlock           = false;
     private boolean colideToTopBlock            = false;
 
-    private double vX = 2.000;
-    private double vY = 2.000;
+    private double vX = 1.000;
+    private double vY = 1.000;
 
 
     private void resetColideFlags() {
@@ -752,7 +773,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     resetColideFlags();
 
                     if (block.type == Block.BLOCK_CHOCO) {
-                        System.out.println("Choco Fall !");
                         final Bonus choco = new Bonus(block.row, block.column , block.type);
                         choco.timeCreated = time;
                         Platform.runLater(new Runnable() {
@@ -765,7 +785,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     }
 
                     if (block.type == Block.BLOCK_MYSTERY) {
-                        System.out.println("Mystery Gift !");
                         final Bonus mystery = new Bonus(block.row, block.column , block.type);
                         mystery.timeCreated = time;
                         Platform.runLater(new Runnable() {
@@ -819,7 +838,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         //if all destroyed move to next lvl
         checkDestroyedCount();
         setPhysicsToBall();
-        System.out.println(time);
 
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
@@ -848,12 +866,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
             //Check for collision with break
             if (mystery.y >= yBreak && mystery.y <= yBreak + breakHeight && mystery.x >= xBreak && mystery.x <= xBreak + breakWidth) {
+                System.out.println("Mystery Gift!");
                 mystery.taken = true;
                 mystery.block.setVisible(false);
-                if (Math.random() < 0.5) {
-                    System.out.println("Congrats ! You got Extra 5 Points ");
-                    score += 5;
-                    new Score().show(mystery.x, mystery.y, 5, this);
+                if (Math.random() < 0.1) {
+                    score -= 1;
+                    new Score().show(mystery.x, mystery.y, -1, this);
                 }else {
                     System.out.println("Oh No ! FREEZE for 5s");
                     breakStopped = true;
@@ -876,5 +894,4 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         this.time = time;
     }
 }
-
 
