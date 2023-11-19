@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
 
-
+    private Soundeffects Soundeffects;
     private int level = 0;
 
     private double xBreak = 0.0f;
@@ -107,6 +107,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     //here is entry point
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        Soundeffects = new Soundeffects();
 
         if (loadFromSave == false) {
             level++;
@@ -128,9 +129,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             load.setTranslateY(300);
             newGame.setTranslateX(220);
             newGame.setTranslateY(340);
-
-
-
         }
         pauseLabel = new Label("\t Game is Paused \n Press Space to Resume!");
         pauseLabel.setTranslateX(160); // Adjust the position as needed
@@ -399,8 +397,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean colideToLeftBlock           = false;
     private boolean colideToTopBlock            = false;
 
-    private double vX = 1.000;
-    private double vY = 1.000;
+    private double vX = 5.000;
+    private double vY = 5.000;
 
 
     private void resetColideFlags() {
@@ -443,6 +441,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             if (!isGoldStauts) {
                 //TODO gameover
                 heart--;
+                Soundeffects.playHeartDown();
                 //just show -1 on the screen
                 new Score().show(sceneWidth / 2, sceneHeigt / 2, -1, this);
 
@@ -762,6 +761,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             for (final Block block : blocks) {
                 int hitCode = block.checkHitToBlock(xBall, yBall);
                 if (hitCode != Block.NO_HIT) {
+                    Soundeffects.playBlockHit();
                     score += 1;
 
                     new Score().show(block.x, block.y, 1, this);
@@ -798,6 +798,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
                     if (block.type == Block.BLOCK_STAR) {
+                        Soundeffects.playGoldBlockHit();
                         goldTime = time;
                         ball.setFill(new ImagePattern(new Image("goldball.png")));
                         System.out.println("gold ball");
@@ -807,6 +808,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                     if (block.type == Block.BLOCK_HEART) {
                         heart++;
+                        Soundeffects.playHeartUp();
                     }
 
                     if (hitCode == Block.HIT_RIGHT) {
@@ -851,6 +853,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
             //Check for collision with break
             if (choco.y >= yBreak && choco.y <= yBreak + breakHeight && choco.x >= xBreak && choco.x <= xBreak + breakWidth) {
+                Soundeffects.playItemCatch();
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
                 choco.block.setVisible(false);
@@ -866,6 +869,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
             //Check for collision with break
             if (mystery.y >= yBreak && mystery.y <= yBreak + breakHeight && mystery.x >= xBreak && mystery.x <= xBreak + breakWidth) {
+                Soundeffects.playItemCatch();
                 System.out.println("Mystery Gift!");
                 mystery.taken = true;
                 mystery.block.setVisible(false);
