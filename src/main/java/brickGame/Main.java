@@ -17,6 +17,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 import java.io.*;
 import java.util.ArrayList;
@@ -65,10 +67,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public static String savePath    = "D:/save/save.mdds";
     public static String savePathDir = "D:/save/";
 
-    private ArrayList<Block> blocks = new ArrayList<Block>();
-    private ArrayList<Bonus> chocos = new ArrayList<Bonus>();
+    private CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Bonus> chocos = new CopyOnWriteArrayList<>();
 
-    private ArrayList<Bonus> mysteries = new ArrayList<Bonus>();
+    private CopyOnWriteArrayList<Bonus> mysteries = new CopyOnWriteArrayList<>();
     private Color[]          colors = new Color[]{
             Color.MAGENTA,
             Color.RED,
@@ -108,6 +110,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         Soundeffects = new Soundeffects();
+
 
         if (loadFromSave == false) {
             level++;
@@ -292,31 +295,47 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         isPenaltyActive = true;
 
-        penaltyLabel = new Label();
-        penaltyLabel.setTranslateX(200); // Set X position
-        penaltyLabel.setTranslateY(300); // Set Y position
-        root.getChildren().add(penaltyLabel);
+        // Run the UI updates on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            penaltyLabel = new Label();
+            penaltyLabel.setTranslateX(200); // Set X position
+            penaltyLabel.setTranslateY(300); // Set Y position
+            Platform.runLater(() -> {
+                root.getChildren().add(penaltyLabel);
+            });
+        });
+
+        final int countdownTime = 5;
+        final int[] remainingTime = {countdownTime}; // Start from countdownTime
 
         Timeline penaltyTimeline = new Timeline();
-        final int countdownTime = 5;
-        final int[] remainingTime = {countdownTime + 1}; // Start from countdownTime + 1
-
         KeyFrame frame = new KeyFrame(Duration.seconds(1), e -> {
             remainingTime[0]--; // Decrement remaining time
-            penaltyLabel.setText("Penalty: " + remainingTime[0] + " seconds");
+
+            // Update label on JavaFX Application Thread
+            Platform.runLater(() -> {
+                penaltyLabel.setText("Penalty: " + remainingTime[0] + " seconds");
+            });
 
             if (remainingTime[0] <= 0) {
                 penaltyTimeline.stop();
-                penaltyLabel.setVisible(false);
+
+                // Hide and remove the label on JavaFX Application Thread
+                Platform.runLater(() -> {
+                    penaltyLabel.setVisible(false);
+                    root.getChildren().remove(penaltyLabel);
+                });
+
                 isPenaltyActive = false; // Reset the penalty flag
                 breakStopped = false; // Resume break movement after the penalty duration
             }
         });
 
         penaltyTimeline.getKeyFrames().add(frame);
-        penaltyTimeline.setCycleCount(countdownTime + 1); // Run for countdownTime + 1 seconds
+        penaltyTimeline.setCycleCount(countdownTime); // Run for countdownTime seconds
         penaltyTimeline.play();
     }
+
 
 
 
@@ -330,36 +349,43 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             public void run() {
                 int sleepTime = 4;
 
-                //basically move 30 small steps with sleep in between and check edge
-                //refactored a little
                 if (breakStopped) {
                     return;
                 }
-                else{
-                    ;for (int i = 0; i < 40; i++) {
-                        if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
-                            xBreak++;
-                        } else if (xBreak > 0 && direction == LEFT) {
-                            xBreak--;
-                        } else {
-                            break;
-                        }
-                        centerBreakX = xBreak + halfBreakWidth;
-                        try {
-                            Thread.sleep(sleepTime);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
 
-                        //sleepTime += 2; // Start deceleration with a small increment
+                for (int i = 0; i < 40; i++) {
+                    final double newX;
+                    if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
+                        newX = xBreak + 1;
+                    } else if (xBreak > 0 && direction == LEFT) {
+                        newX = xBreak - 1;
+                    } else {
+                        break;
+                    }
 
+                    final double newCenterX = newX + halfBreakWidth;
+
+                    // Use final variables inside the lambda
+                    Platform.runLater(() -> {
+                        xBreak = newX;
+                        centerBreakX = newCenterX;
+                        // Update your UI element's position here
+                    });
+
+                    try {
+                        Thread.sleep(sleepTime);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
             }
         }).start();
-
-
     }
+
+
+
+
+
 
 
     private void initBall() {
@@ -778,7 +804,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                root.getChildren().add(choco.block);
+                                Platform.runLater(() -> {
+                                    root.getChildren().add(choco.block);
+                                });
                             }
                         });
                         chocos.add(choco);
@@ -790,7 +818,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                root.getChildren().add(mystery.block);
+                                Platform.runLater(() -> {
+                                    root.getChildren().add(mystery.block);
+                                });
+
                             }
                         });
                         mysteries.add(mystery);
@@ -802,7 +833,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         goldTime = time;
                         ball.setFill(new ImagePattern(new Image("goldball.png")));
                         System.out.println("gold ball");
-                        root.getStyleClass().add("goldRoot");
+                        Platform.runLater(() -> {
+                            root.getStyleClass().add("goldRoot");
+                        });
+
                         isGoldStauts = true;
                     }
 
@@ -843,7 +877,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
-            root.getStyleClass().remove("goldRoot");
+            Platform.runLater(() -> {
+                root.getStyleClass().remove("goldRoot");
+            });
             isGoldStauts = false;
         }
 
@@ -856,8 +892,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 Soundeffects.playItemCatch();
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
-                choco.block.setVisible(false);
                 score += 3;
+                Platform.runLater(() -> {
+                    choco.block.setVisible(false);
+//                    new Score().show(choco.x, choco.y, 3, this);
+                });
                 new Score().show(choco.x, choco.y, 3, this);
             }
             //gravity
@@ -872,7 +911,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 Soundeffects.playItemCatch();
                 System.out.println("Mystery Gift!");
                 mystery.taken = true;
-                mystery.block.setVisible(false);
+                Platform.runLater(() -> {
+                    mystery.block.setVisible(false);
+                });
                 if (Math.random() < 0.1) {
                     score -= 1;
                     new Score().show(mystery.x, mystery.y, -1, this);

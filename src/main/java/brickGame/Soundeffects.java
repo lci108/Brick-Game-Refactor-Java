@@ -55,14 +55,32 @@ public class Soundeffects {
     public void playGoldBlockHit() {playSound(goldTimePlayer);}
 
     private void playSound(MediaPlayer player) {
-        try {
-            if (player != null) {
-                player.stop();
+        if (player != null) {
+            try {
+                player.stop(); // Ensure the player is stopped before playing
                 player.play();
+            } catch (Exception e) {
+                System.err.println("Error playing sound: " + e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            System.err.println("MediaPlayer is null, cannot play sound.");
         }
     }
+
+    public void dispose() {
+        disposePlayer(blockHitPlayer);
+        disposePlayer(itemCatchPlayer);
+        disposePlayer(heartUpPlayer);
+        disposePlayer(heartDownPlayer);
+        disposePlayer(goldTimePlayer);
+    }
+
+    private void disposePlayer(MediaPlayer player) {
+        if (player != null) {
+            player.stop();
+            player.dispose();
+        }
+    }
+
 }
 

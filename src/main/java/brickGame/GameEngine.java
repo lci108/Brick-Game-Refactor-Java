@@ -1,19 +1,15 @@
 package brickGame;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameEngine {
 
     private OnAction onAction;
-    private volatile int fps = 15;
-    private Timeline updateTimeline;
-    private Timeline physicsTimeline;
-    private volatile boolean isStopped = true;
-
+    private int fps = 15;
+    private Timer updateTimer, physicsTimer, timeTimer;
+    private boolean isStopped = true;
     private long time = 0;
-    private Timeline timeTimeline;
     private final Object timeLock = new Object();
 
     public void setOnAction(OnAction onAction) {
@@ -21,61 +17,69 @@ public class GameEngine {
     }
 
     public void setFps(int fps) {
-        if (fps <= 0) {
-            throw new IllegalArgumentException("FPS must be greater than 0");
-        }
         this.fps = 1000 / fps;
-    }
-
-    private void update() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.millis(fps), e -> onAction.onUpdate()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
     }
 
     private void initialize() {
         onAction.onInit();
     }
 
-    private void physicsCalculation() {
-        physicsTimeline = new Timeline(new KeyFrame(Duration.millis(fps), e -> onAction.onPhysicsUpdate()));
-        physicsTimeline.setCycleCount(Timeline.INDEFINITE);
-        physicsTimeline.play();
+    private void startUpdateTimer() {
+        updateTimer = new Timer();
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                onAction.onUpdate();
+            }
+        }, 0, fps);
+    }
+
+    private void startPhysicsTimer() {
+        physicsTimer = new Timer();
+        physicsTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                onAction.onPhysicsUpdate();
+            }
+        }, 0, fps);
+    }
+
+    private void startTimeTimer() {
+        timeTimer = new Timer();
+        timeTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (timeLock) {
+                    time++;
+                }
+                onAction.onTime(time);
+            }
+        }, 0, 1);
     }
 
     public void start() {
-        synchronized (timeLock) {
-            time = 0;
+        if (isStopped) {
+            isStopped = false;
+            initialize();
+            startUpdateTimer();
+            startPhysicsTimer();
+            startTimeTimer();
         }
-        isStopped = false;
-        initialize();
-        update();
-        physicsCalculation();
-        timeStart();
     }
 
     public void stop() {
-        isStopped = true;
-        if (updateTimeline != null) {
-            updateTimeline.stop();
-        }
-        if (physicsTimeline != null) {
-            physicsTimeline.stop();
-        }
-        if (timeTimeline != null) {
-            timeTimeline.stop();
-        }
-    }
-
-    private void timeStart() {
-        timeTimeline = new Timeline(new KeyFrame(Duration.millis(1), e -> {
-            synchronized (timeLock) {
-                time++;
+        if (!isStopped) {
+            isStopped = true;
+            if (updateTimer != null) {
+                updateTimer.cancel();
             }
-            onAction.onTime(time);
-        }));
-        timeTimeline.setCycleCount(Timeline.INDEFINITE);
-        timeTimeline.play();
+            if (physicsTimer != null) {
+                physicsTimer.cancel();
+            }
+            if (timeTimer != null) {
+                timeTimer.cancel();
+            }
+        }
     }
 
     public interface OnAction {
@@ -85,3 +89,4 @@ public class GameEngine {
         void onTime(long time);
     }
 }
+

@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Score {
     public void show(final double x, final double y, int score, final Main main) {
@@ -16,16 +18,20 @@ public class Score {
 
         Platform.runLater(() -> main.root.getChildren().add(label));
 
-        Timeline timeline = new Timeline();
+        Timer timer = new Timer();
         for (int i = 0; i <= 20; i++) {
             int finalI = i;
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(15 * i), e -> {
-                label.setScaleX(finalI);
-                label.setScaleY(finalI);
-                label.setOpacity((20 - finalI) / 20.0);
-            }));
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        label.setScaleX(finalI);
+                        label.setScaleY(finalI);
+                        label.setOpacity((20 - finalI) / 20.0);
+                    });
+                }
+            }, 15 * i);
         }
-        timeline.play();
     }
 
     public void showMessage(String message, final Main main) {
@@ -35,16 +41,20 @@ public class Score {
 
         Platform.runLater(() -> main.root.getChildren().add(label));
 
-        Timeline timeline = new Timeline();
+        Timer timer = new Timer();
         for (int i = 0; i <= 20; i++) {
             int index = i;
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(15 * i), e -> {
-                label.setScaleX(Math.abs(index - 10));
-                label.setScaleY(Math.abs(index - 10));
-                label.setOpacity((20 - index) / 20.0);
-            }));
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        label.setScaleX(Math.abs(index - 10));
+                        label.setScaleY(Math.abs(index - 10));
+                        label.setOpacity((20 - index) / 20.0);
+                    });
+                }
+            }, 15 * i);
         }
-        timeline.play();
     }
 
     public void showGameOver(final Main main) {
