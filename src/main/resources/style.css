@@ -2,13 +2,26 @@
     -fx-background-image: url("bg.png");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
+
+
 }
 
 .goldRoot {
      -fx-background-image: url("bg2.png");
      -fx-background-repeat: no-repeat;
      -fx-background-size: cover;
+     -fx-background-position: center center;
+
 }
+
+.freezeRoot {
+     -fx-background-image: url("bg3.png");
+     -fx-background-repeat: no-repeat;
+     -fx-background-size: cover;
+     -fx-background-position: center center;
+
+}
+
 .label {
     -fx-text-fill: linear-gradient(from 0% 0% to 100% 200%, #DA70D6, #8A2BE2); /* Gradient text fill from orchid to blue violet */
     -fx-padding: 8px;              /* Padding around the label */

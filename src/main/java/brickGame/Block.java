@@ -89,7 +89,6 @@ public class Block implements Serializable {
 
 
     // Assuming the blocks are axis-aligned rectangles and the ball is a circle
-    // Assuming the blocks are axis-aligned rectangles and the ball is a circle
     public int checkHitToBlock(double xBall, double yBall) {
 
         if (isDestroyed) {
@@ -128,6 +127,15 @@ public class Block implements Serializable {
 
         return NO_HIT; // No collision occurred
     }
+    public boolean isBallInPath(double xBall, double yBall, int ballRadius) {
+        double ballTop = yBall - ballRadius;
+        double ballBottom = yBall + ballRadius;
+        double ballLeft = xBall - ballRadius;
+        double ballRight = xBall + ballRadius;
+
+        return ballRight > x && ballLeft < x + width && ballBottom > y && ballTop < y + height;
+    }
+
 
 
 

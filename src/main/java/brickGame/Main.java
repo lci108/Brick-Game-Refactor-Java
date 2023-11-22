@@ -33,7 +33,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private double centerBreakX;
     private double yBreak = 640.0f;
 
-    private int breakWidth     = 130;
+    private int breakWidth     = 200;
     private int breakHeight    = 30;
     private int halfBreakWidth = breakWidth / 2;
 
@@ -94,6 +94,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean loadFromSave = false;
 
     private Label pauseLabel;
+    private boolean isNextLevelCalled = false;
+
+
+
 
 
 
@@ -110,6 +114,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         Soundeffects = new Soundeffects();
+        isNextLevelCalled = false;  // Reset the flag
+
 
 
         if (loadFromSave == false) {
@@ -212,7 +218,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
     private static final int STAR_CHANCE = 175; // 150-174 for star (5%)
 
-    private static final int MYSTERY_CHANCE =500 ; //175 - 199 for mystery (5%)
+    private static final int MYSTERY_CHANCE =200 ; //175 - 199 for mystery (5%)
 
     //refactored initBoard and changed the percentage
     private void initBoard() {
@@ -294,6 +300,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
 
         isPenaltyActive = true;
+        Platform.runLater(() -> {
+            root.getStyleClass().add("freezeRoot");
+
+        });
 
         // Run the UI updates on the JavaFX Application Thread
         Platform.runLater(() -> {
@@ -325,6 +335,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     penaltyLabel.setVisible(false);
                     root.getChildren().remove(penaltyLabel);
                 });
+                Platform.runLater(() -> {
+                    root.getStyleClass().remove("freezeRoot");
+
+                });
 
                 isPenaltyActive = false; // Reset the penalty flag
                 breakStopped = false; // Resume break movement after the penalty duration
@@ -340,8 +354,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
 
-    float oldXBreak;
-    //vreated new volataile boolean so that other threads can be seen , if want to modify next time easier
+
     private volatile boolean breakStopped = false;
     private void move(final int direction) {
         new Thread(new Runnable() {
@@ -365,18 +378,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                     final double newCenterX = newX + halfBreakWidth;
 
-                    // Use final variables inside the lambda
                     Platform.runLater(() -> {
                         xBreak = newX;
                         centerBreakX = newCenterX;
                         // Update your UI element's position here
                     });
-
                     try {
                         Thread.sleep(sleepTime);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+
+
                 }
             }
         }).start();
@@ -389,15 +402,24 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void initBall() {
-        // Start in the middle of the screen
-        xBall = sceneWidth / 2;
-        yBall = sceneHeigt / 2;
+        // Calculate the total height occupied by the blocks
+        int totalBlocksHeight = Block.getHeight() * (level + 1) + Block.getPaddingTop();
 
+        // Set the ball's initial position
+        xBall = sceneWidth / 2; // Center horizontally
+        yBall = totalBlocksHeight + 20; // 20 pixels below the blocks
+
+        // Ensure the ball doesn't spawn off-screen
+        if (yBall > sceneHeigt - ballRadius * 2) {
+            yBall = sceneHeigt - ballRadius * 2;
+        }
+
+        // Initialize the ball
         ball = new Circle();
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("ball.png")));
-
     }
+
 
     private void initBreak() {
         rect = new Rectangle();
@@ -699,6 +721,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void nextLevel() {
+        if (isNextLevelCalled) {
+            return;
+        }
+        isNextLevelCalled = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -847,11 +873,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                     if (hitCode == Block.HIT_RIGHT) {
                         colideToRightBlock = true;
-                    } else if (hitCode == Block.HIT_BOTTOM) {
+                    }
+                    if (hitCode == Block.HIT_BOTTOM) {
                         colideToBottomBlock = true;
-                    } else if (hitCode == Block.HIT_LEFT) {
+                    }
+                    if (hitCode == Block.HIT_LEFT) {
                         colideToLeftBlock = true;
-                    } else if (hitCode == Block.HIT_TOP) {
+                    }
+                    if (hitCode == Block.HIT_TOP) {
                         colideToTopBlock = true;
                     }
 
@@ -919,6 +948,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     new Score().show(mystery.x, mystery.y, -1, this);
                 }else {
                     System.out.println("Oh No ! FREEZE for 5s");
+                    Soundeffects.playFreezeTime();
                     breakStopped = true;
                     handlePenalty();
                 }
