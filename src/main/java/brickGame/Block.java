@@ -8,7 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 
-import static brickGame.Main.ballRadius;
+import static brickGame.Ball.ballRadius;
 
 public class Block implements Serializable {
     private static Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
@@ -32,11 +32,11 @@ public class Block implements Serializable {
     public Rectangle rect;
 
 
-    public static int NO_HIT = -1;
-    public static int HIT_RIGHT = 0;
-    public static int HIT_BOTTOM = 1;
-    public static int HIT_LEFT = 2;
-    public static int HIT_TOP = 3;
+    public static final int NO_HIT = -1;
+    public static final int HIT_RIGHT = 0;
+    public static final int HIT_BOTTOM = 1;
+    public static final int HIT_LEFT = 2;
+    public static final int HIT_TOP = 3;
 
     public static int BLOCK_NORMAL = 99;
     public static int BLOCK_CHOCO = 100;
@@ -127,14 +127,7 @@ public class Block implements Serializable {
 
         return NO_HIT; // No collision occurred
     }
-    public boolean isBallInPath(double xBall, double yBall, int ballRadius) {
-        double ballTop = yBall - ballRadius;
-        double ballBottom = yBall + ballRadius;
-        double ballLeft = xBall - ballRadius;
-        double ballRight = xBall + ballRadius;
 
-        return ballRight > x && ballLeft < x + width && ballBottom > y && ballTop < y + height;
-    }
 
 
 

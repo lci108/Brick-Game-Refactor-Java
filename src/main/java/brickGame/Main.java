@@ -24,26 +24,55 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static brickGame.Ball.ballRadius;
+
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
+    public double getxBreak() {
+        return xBreak;
+    }
+
+    public double getyBreak() {
+        return yBreak;
+    }
+
+    public int getBreakWidth() {
+        return breakWidth;
+    }
+
+    public double getCenterBreakX() {
+        return centerBreakX;
+    }
+
+    public int getSceneWidth() {
+        return sceneWidth;
+    }
+
+    public int getSceneHeight() {
+        return sceneHeigt;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
     private Soundeffects Soundeffects;
-    private int level = 0;
+    public static int level = 0;
 
-    private double xBreak = 0.0f;
-    private double centerBreakX;
-    private double yBreak = 640.0f;
+    public static double xBreak = 0.0f;
+    public static double centerBreakX;
+    public static double yBreak = 640.0f;
 
-    private int breakWidth     = 200;
+    public static int breakWidth     = 200;
     private int breakHeight    = 30;
     private int halfBreakWidth = breakWidth / 2;
 
-    private int sceneWidth = 500;
-    private int sceneHeigt = 700;
+    public static int sceneWidth = 500;
+    public static int sceneHeigt = 700;
 
     private static int LEFT  = 1;
     private static int RIGHT = 2;
 
-    private Circle ball;
+    private Ball ball;
     private double xBall;
     private double yBall;
 
@@ -51,7 +80,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean isExistHeartBlock = false;
 
     private Rectangle rect;
-    public static int  ballRadius = 10;
 
     private int destroyedBlockCount = 0;
 
@@ -60,7 +88,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private int  heart    = 30000;
     private int  score    = 0;
     private long time     = 0;
-    private long hitTime  = 0;
     private long goldTime = 0;
 
     private GameEngine engine;
@@ -410,14 +437,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         yBall = totalBlocksHeight + 20; // 20 pixels below the blocks
 
         // Ensure the ball doesn't spawn off-screen
-        if (yBall > sceneHeigt - ballRadius * 2) {
-            yBall = sceneHeigt - ballRadius * 2;
+        if (yBall > sceneHeigt - Ball.ballRadius * 2) {
+            yBall = sceneHeigt - Ball.ballRadius * 2;
         }
 
         // Initialize the ball
-        ball = new Circle();
-        ball.setRadius(ballRadius);
-        ball.setFill(new ImagePattern(new Image("ball.png")));
+        ball = new Ball(Ball.ballRadius, xBall, yBall);
+
     }
 
 
@@ -445,8 +471,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private boolean colideToLeftBlock           = false;
     private boolean colideToTopBlock            = false;
 
-    private double vX = 5.000;
-    private double vY = 5.000;
+    public static double vX = 5.000;
+    public static  double vY = 5.000;
 
 
     private void resetColideFlags() {
@@ -463,7 +489,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void setPhysicsToBall() {
-        //v = ((time - hitTime) / 1000.000) + 1.000;
 
         if (goDownBall) {
             yBall += vY;
@@ -487,7 +512,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             resetColideFlags();
             goDownBall = false;
             if (!isGoldStauts) {
-                //TODO gameover
                 heart--;
                 Soundeffects.playHeartDown();
                 //just show -1 on the screen
@@ -499,14 +523,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 }
 
             }
-            //return;
         }
         //vertical collision
         if (yBall >= yBreak - ballRadius) {
-            //System.out.println("Colide1");
-            //horizontal collision
             if (xBall >= xBreak && xBall <= xBreak + breakWidth) {
-                hitTime = time;
                 resetColideFlags();
                 colideToBreak = true;
                 goDownBall = false;
@@ -739,7 +759,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     isExistHeartBlock = false;
 
 
-                    hitTime = 0;
                     time = 0;
                     goldTime = 0;
 
@@ -770,7 +789,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
             isGoldStauts = false;
             isExistHeartBlock = false;
-            hitTime = 0;
             time = 0;
             goldTime = 0;
 
@@ -796,8 +814,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                 rect.setX(xBreak);
                 rect.setY(yBreak);
-                ball.setCenterX(xBall);
-                ball.setCenterY(yBall);
+                ball.setCenterX(ball.getBallX());
+                ball.setCenterY(ball.getBallY());
 
                 for (Bonus choco : chocos) {
                     choco.block.setY(choco.y);
@@ -809,9 +827,9 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         });
 
         //if smtg collide with ball
-        if (yBall >= Block.getPaddingTop() && yBall <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+        if (ball.getBallY() >= Block.getPaddingTop() && ball.getBallY() <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(xBall, yBall);
+                int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
                 if (hitCode != Block.NO_HIT) {
                     Soundeffects.playBlockHit();
                     score += 1;
@@ -871,18 +889,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         Soundeffects.playHeartUp();
                     }
 
-                    if (hitCode == Block.HIT_RIGHT) {
-                        colideToRightBlock = true;
-                    }
-                    if (hitCode == Block.HIT_BOTTOM) {
-                        colideToBottomBlock = true;
-                    }
-                    if (hitCode == Block.HIT_LEFT) {
-                        colideToLeftBlock = true;
-                    }
-                    if (hitCode == Block.HIT_TOP) {
-                        colideToTopBlock = true;
-                    }
+                    ball.onUpdateBall(hitCode);
 
                 }
 
@@ -902,8 +909,24 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void onPhysicsUpdate() {
         //if all destroyed move to next lvl
         checkDestroyedCount();
-        setPhysicsToBall();
+        ball.setPhysicsToBall();
+        if (ball.hasHitSceneBottom()) {
+            // Handle the scenario when the ball hits the bottom
+            if (!isGoldStauts) {
+                heart--;
+                Soundeffects.playHeartDown();
+                new Score().show(sceneWidth / 2, sceneHeigt / 2, -1, this);
 
+                if (heart == 0) {
+                    new Score().showGameOver(this);
+                    engine.stop();
+                }
+            }
+            ball.resetHitBottomFlag(); // Reset the flag after handling
+        }
+
+        xBall = ball.getBallX();
+        yBall = ball.getBallY();
         if (time - goldTime > 5000) {
             ball.setFill(new ImagePattern(new Image("ball.png")));
             Platform.runLater(() -> {
@@ -968,5 +991,5 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void onTime(long time) {
         this.time = time;
     }
-}
 
+}
