@@ -11,14 +11,19 @@ public class Ball extends Circle {
 
     private double vX;
     private double vY;
-    private boolean goDownBall = true;
-    private boolean goRightBall = false;
+
+    public void setGoDownBall(boolean GODOWNBALL) {
+        goDownBall = GODOWNBALL;
+    }
+
+    private static boolean goDownBall = true;
+    private static boolean goRightBall = false;
 
 
-    private boolean colideToRightBlock = false;
-    private boolean colideToBottomBlock = false;
-    private boolean colideToLeftBlock = false;
-    private boolean colideToTopBlock = false;
+    private static boolean colideToRightBlock = false;
+    private static boolean colideToBottomBlock = false;
+    private static boolean colideToLeftBlock = false;
+    private static boolean colideToTopBlock = false;
 
     private double xBreak, yBreak;
     private int breakWidth;
@@ -43,13 +48,13 @@ public class Ball extends Circle {
 
     public void setPhysicsToBall() {
 
-        // Use getters from Main class
+        // Use variables from Main class
         this.vX = Main.vX;
         this.vY = Main.vY;
-        this.xBreak = Main.xBreak;
-        this.yBreak = Main.yBreak;
+        this.xBreak = Break.getxBreak();
+        this.yBreak = Break.getyBreak();
         this.breakWidth = Main.breakWidth;
-        this.centerBreakX = Main.centerBreakX;
+        this.centerBreakX = Break.getCenterBreakx();
         this.sceneWidth = Main.sceneWidth;
         this.sceneHeight = Main.sceneHeigt;
         this.level = Main.level;
@@ -66,51 +71,68 @@ public class Ball extends Circle {
             this.setCenterX(this.getCenterX() - vX);
         }
 
+        // Collision with top or bottom of the scene
         if (this.getCenterY() <= 0) {
-            resetColideFlags();
             goDownBall = true;
-        } else if (this.getCenterY() >= sceneHeight - ballRadius * 2) {
             resetColideFlags();
+        } else if (this.getCenterY() >= sceneHeight - ballRadius * 2) {
             goDownBall = false;
             hitSceneBottom = true;
+            resetColideFlags();
+            // Additional logic for handling when the ball hits the bottom
         }
 
+        // Collision with break
         if (this.getCenterY() >= yBreak - ballRadius &&
                 this.getCenterX() >= xBreak &&
                 this.getCenterX() <= xBreak + breakWidth) {
+
             resetColideFlags();
             goDownBall = false;
 
-            double relation = (this.getCenterX() - centerBreakX) / (breakWidth / 2);
+            boolean hitLeftSide = this.getCenterX() < (xBreak + breakWidth / 2.0);
+            if ((goRightBall && hitLeftSide) || (!goRightBall && !hitLeftSide)) {
+                goRightBall = !goRightBall;
+            }
+
+            // Calculate the new horizontal velocity based on the collision
+            double relation = (this.getCenterX() - centerBreakX) / (breakWidth / 2.0);
             vX = calculateVelocityX(relation);
-            goRightBall = this.getCenterX() > centerBreakX;
         }
 
-        if (this.getCenterX() >= sceneWidth) {
-            resetColideFlags();
-            goRightBall = false;
-        } else if (this.getCenterX() <= 0) {
-            resetColideFlags();
+        // Collision with left or right walls of the scene
+        if (this.getCenterX() <= 0) {
             goRightBall = true;
+            resetColideFlags();
+        } else if (this.getCenterX() >= sceneWidth) {
+            goRightBall = false;
+            resetColideFlags();
         }
+
+        //Block Colide
 
         if (colideToRightBlock) {
+
             goRightBall = false;
-
         }
+
         if (colideToLeftBlock) {
+
             goRightBall = true;
-
         }
+
         if (colideToTopBlock) {
+
             goDownBall = false;
-
         }
+
         if (colideToBottomBlock) {
+
             goDownBall = true;
+        }
 
         }
-    }
+
 
 
 
@@ -144,7 +166,7 @@ public class Ball extends Circle {
         }
     }
 
-    private void resetColideFlags() {
+    public  void resetColideFlags() {
         colideToRightBlock = false;
         colideToBottomBlock = false;
         colideToLeftBlock = false;
