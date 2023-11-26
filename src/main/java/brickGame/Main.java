@@ -129,7 +129,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 new Score().showMessage("Level Up :)", view);
             }
             if (level == 18) {
-                new Score().showWin(this);
+                new Score().showWin(view);
                 return;
             }
 
@@ -201,23 +201,125 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
     private static final int STAR_CHANCE = 175; // 150-174 for star (5%)
 
-    private static final int MYSTERY_CHANCE =500 ; //175 - 199 for mystery (5%)
+    private static final int MYSTERY_CHANCE =200 ; //175 - 199 for mystery (5%)
 
     //refactored initBoard and changed the percentage
     private void initBoard() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < level + 1; j++) {
-                int randomChance = new Random().nextInt(CHANCE_DIVISOR);
+        switch (level) {
+            case 1: //horizontal line
+                // Layout for level 1
+                for (int i = 0; i < 5; i++) {
+                    int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                    blocks.add(new Block(0, i, colors[i % colors.length], type));
+                }
+                break;
 
-                if (randomChance % 5 == 0) {
-                    continue;
+            case 2:// 3 vertical line
+                for (int row = 0; row < 10; row++) {
+                    for (int col = 0; col < 5; col += 2) {
+                        int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                        blocks.add(new Block(row, col, colors[col % colors.length], type));
+                    }
+                }
+                break;
+            case 3: //scatter
+                // Layout for level 2
+                for (int i = 0; i < 5; i++) {
+                    for (int j = 0; j < 5; j++) {
+                        if ((i + j) % 2 == 0) {
+                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                            blocks.add(new Block(i, j, colors[j % colors.length], type));
+                        }
+                    }
+                }
+                break;
+            // ... Similarly for levels 3, 4, and 5
+            case 4:// x
+                for (int i = 0; i < 5; i++) {
+                    for (int j = 0; j < 5; j++) {
+                        // Place blocks in positions forming an 'X'
+                        if (i == j || i + j == 4) { // Diagonal from top-left to bottom-right and top-right to bottom-left
+                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                            blocks.add(new Block(i, j, colors[j % colors.length], type));
+                        }
+                    }
+                }
+                break;
+            case 5://hollow square
+                for (int row = 0; row < 7; row++) {
+                    for (int col = 0; col < 5; col++) {
+                        // Add blocks only on the edges, leave the inside hollow
+                        if (row == 0 || row == 6 || col == 0 || col == 6) {
+                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                            blocks.add(new Block(row, col, colors[col % colors.length], type));
+                        }
+                    }
+                }
+                break;
+            case 6://zig zag
+                for (int row = 0; row < 10; row++) {
+                    for (int col = 0; col < 5; col++) {
+                        // Check if we are on a "zig" or "zag" row
+                        if ((row % 10 < 5 && row % 5 == col) || // Zig (moving right)
+                                (row % 10 >= 5 && 4 - (row % 5) == col)) { // Zag (moving left)
+                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                            blocks.add(new Block(row, col, colors[col % colors.length], type));
+                        }
+                    }
+                }
+            break;
+            case 7:// smiley face
+
+                // Positions for the smiley face
+                int[][] smileyPositions = {
+                        {1, 1}, {1, 3},  // Eyes
+                        {4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}, {5, 2}, {6, 2} , // Smiling mouth
+                        {5, 1}, {5, 3}   // Mouth edges
+                };
+
+                // Create blocks at specified positions
+                for (int[] position : smileyPositions) {
+                    int row = position[0];
+                    int col = position[1];
+                    int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                    blocks.add(new Block(row, col, colors[col % colors.length], type));
                 }
 
-                int type = determineBlockType(randomChance);
-                blocks.add(new Block(j, i, colors[randomChance % colors.length], type));
-            }
+                break;
+            case 8: //A
+                for (int row = 0; row < 6; row++) {
+                    for (int col = 0; col < 5; col++) {
+                        // Conditions to create 'A'
+                        if ((row == 3) || // Middle horizontal line
+                                (row == 0 && col == 2) || // Top of 'A'
+                                (row > 0 && ((col == 0 && row < 4) || (col == 4 && row < 4))) || // Left and right sides of 'A'
+                                (row >= 4 && col == 0) || (row >= 4 && col == 4)) { // Stem of 'A'
+                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
+                            blocks.add(new Block(row, col, colors[col % colors.length], type));
+                        }
+                    }
+                }
+                break;
+
+            default:
+                // If level is greater than 5, maybe end the game or start over
+                break;
         }
+
+//        for (int i = 0; i < 4; i++) {
+//            for (int j = 0; j < level + 1; j++) {
+//                int randomChance = new Random().nextInt(CHANCE_DIVISOR);
+//
+//                if (randomChance % 5 == 0) {
+//                    continue;
+//                }
+//
+//                int type = determineBlockType(randomChance);
+//                blocks.add(new Block(j, i, colors[randomChance % colors.length], type));
+//            }
+//        }
     }
+
 
 
     private int determineBlockType(int randomChance) {
@@ -361,7 +463,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         // Set the ball's initial position
         xBall = sceneWidth / 2; // Center horizontally
-        yBall = totalBlocksHeight + 20; // 20 pixels below the blocks
+        yBall = 360; // 20 pixels below the blocks
 
         // Ensure the ball doesn't spawn off-screen
         if (yBall > sceneHeigt - Ball.ballRadius * 2) {
@@ -745,7 +847,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         });
 
         //if smtg collide with ball
-        if (ball.getBallY() >= Block.getPaddingTop() && ball.getBallY() <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+        if (ball.getBallY() >= Block.getPaddingTop() && ball.getBallY() <= (Block.getHeight() * (10)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
                 int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
                 if (hitCode != Block.NO_HIT) {

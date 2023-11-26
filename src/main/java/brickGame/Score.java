@@ -65,15 +65,15 @@ public class Score {
         });
     }
 
-    public void showWin(final Main main) {
+    public void showWin(final View view) {
         Platform.runLater(() -> {
             Label label = new Label("You Win :)");
             label.setTranslateX(200);
             label.setTranslateY(250);
             label.setScaleX(2);
             label.setScaleY(2);
+            view.addToRoot(label);
 
-            main.root.getChildren().add(label);
         });
     }
 }

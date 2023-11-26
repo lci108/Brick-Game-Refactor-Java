@@ -25,10 +25,10 @@ public class Block implements Serializable {
     public int x;
     public int y;
 
-    private int width = 100;
+    private int width = 80;
     private int height = 30;
     private int paddingTop = height * 2;
-    private int paddingH = 50;
+    private int paddingH = 40;
     public Rectangle rect;
 
 

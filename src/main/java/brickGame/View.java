@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
 
 import static brickGame.Main.*;
@@ -17,12 +16,8 @@ public class View {
     private Label scoreLabel, heartLabel, levelLabel, pauseLabel , penaltyLabel;
     private Button load, newGame;
     private Scene scene;
-    private Stage primaryStage;
-    private int score, heart, level; // Assuming these are passed or set elsewhere
+    private int score, heart, level;
 
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
 
     public View(boolean loadFromSave, Ball ball, Break rect,int level) {
         initUI(loadFromSave , ball , rect);
@@ -147,6 +142,5 @@ public class View {
         scene.setOnKeyPressed(handler);
     }
 
-    // Additional methods for UI management
-    // ...
+
 }
