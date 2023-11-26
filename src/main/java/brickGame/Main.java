@@ -119,7 +119,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     //here is entry point
     public void start(Stage primaryStage) throws Exception {
-        view = new View(primaryStage);
+        this.primaryStage = primaryStage;
         Soundeffects = new Soundeffects();
         isNextLevelCalled = false;  // Reset the flag
 
@@ -138,12 +138,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             initBoard();
 
         }
-        view.initUI(loadFromSave , ball , rect);
-        view.updateLevel(level);
+        view = new View(loadFromSave , ball , rect, level);
+
+//        view.initUI(loadFromSave , ball , rect);
+//        view.updateLevel(level);
 
 
         //go to handle method
-        view.setOnKeyPressed(this);
+        view.getScene().setOnKeyPressed(this);
 
         // Setup scene and show
         primaryStage.setTitle("Game");
@@ -683,7 +685,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     chocos.clear();
                     mysteries.clear();
                     destroyedBlockCount = 0;
-                    start(view.getPrimaryStage());
+                    start(primaryStage);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -712,7 +714,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             chocos.clear();
             mysteries.clear();
 
-            start(view.getPrimaryStage());
+            start(primaryStage);
         } catch (Exception e) {
             e.printStackTrace();
         }

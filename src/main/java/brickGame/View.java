@@ -24,8 +24,9 @@ public class View {
         return primaryStage;
     }
 
-    public View(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public View(boolean loadFromSave, Ball ball, Break rect,int level) {
+        initUI(loadFromSave , ball , rect);
+        updateLevel(level);
     }
 
     public void initUI(boolean loadFromSave, Ball ball, Break rect) {
@@ -110,12 +111,6 @@ public class View {
 
 
 
-
-    public void show() {
-        primaryStage.setTitle("Game");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
     public void updateScore(int score) {
         scoreLabel.setText("Score: " + score);
