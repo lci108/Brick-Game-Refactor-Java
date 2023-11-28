@@ -7,6 +7,7 @@ import javafx.scene.shape.Circle;
 import java.util.List;
 
 public class Ball extends Circle {
+    private Model model;
     public static final int ballRadius = 10;
 
     private double vX;
@@ -19,6 +20,49 @@ public class Ball extends Circle {
     private static boolean goDownBall = true;
     private static boolean goRightBall = false;
 
+    public static boolean isGoDownBall() {
+        return goDownBall;
+    }
+
+    public static boolean isGoRightBall() {
+        return goRightBall;
+    }
+
+    public static void setGoRightBall(boolean goRightBall) {
+        Ball.goRightBall = goRightBall;
+    }
+
+    public static boolean isColideToRightBlock() {
+        return colideToRightBlock;
+    }
+
+    public static void setColideToRightBlock(boolean colideToRightBlock) {
+        Ball.colideToRightBlock = colideToRightBlock;
+    }
+
+    public static boolean isColideToBottomBlock() {
+        return colideToBottomBlock;
+    }
+
+    public static void setColideToBottomBlock(boolean colideToBottomBlock) {
+        Ball.colideToBottomBlock = colideToBottomBlock;
+    }
+
+    public static boolean isColideToLeftBlock() {
+        return colideToLeftBlock;
+    }
+
+    public static void setColideToLeftBlock(boolean colideToLeftBlock) {
+        Ball.colideToLeftBlock = colideToLeftBlock;
+    }
+
+    public static boolean isColideToTopBlock() {
+        return colideToTopBlock;
+    }
+
+    public static void setColideToTopBlock(boolean colideToTopBlock) {
+        Ball.colideToTopBlock = colideToTopBlock;
+    }
 
     private static boolean colideToRightBlock = false;
     private static boolean colideToBottomBlock = false;
@@ -47,17 +91,18 @@ public class Ball extends Circle {
     }
 
     public void setPhysicsToBall() {
+        model = new Model();
 
         // Use variables from Main class
-        this.vX = Main.vX;
-        this.vY = Main.vY;
+        this.vX = 3;
+        this.vY = 3;
         this.xBreak = Break.getxBreak();
         this.yBreak = Break.getyBreak();
         this.breakWidth = Main.breakWidth;
         this.centerBreakX = Break.getCenterBreakx();
         this.sceneWidth = Main.sceneWidth;
         this.sceneHeight = Main.sceneHeigt;
-        this.level = Main.level;
+        this.level = model.getLevel();
 
         if (goDownBall) {
             this.setCenterY(this.getCenterY() + vY);

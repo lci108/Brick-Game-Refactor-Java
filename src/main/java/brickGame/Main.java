@@ -5,39 +5,29 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+
 import java.util.Random;
 
 
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
+    private ExhaustTail exhaustTail;
+
 
 
 
     private Soundeffects Soundeffects;
-    public static int level = 0;
-
-    public static double xBreak = 0.0f;
-    public static double yBreak = 640.0f;
-
     public static int breakWidth     = 200;
-    private int breakHeight    = 30;
+    public static int breakHeight    = 30;
 
     public static int sceneWidth = 500;
     public static int sceneHeigt = 700;
@@ -46,25 +36,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public static final int RIGHT = 2;
 
     private Ball ball;
-    private double xBall;
-    private double yBall;
 
     private boolean isGoldStauts      = false;
     private boolean isExistHeartBlock = false;
 
     private Break rect;
 
-    public static int destroyedBlockCount = 0;
 
-
-
-    private int  heart    = 1;
-
-//    public void setScore(int score) {
-//        this.score = score;
-//    }
-
-    private int  score    = 0;
     private long time     = 0;
     private long goldTime = 0;
 
@@ -77,43 +55,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private CopyOnWriteArrayList<Bonus> chocos = new CopyOnWriteArrayList<>();
 
     private CopyOnWriteArrayList<Bonus> mysteries = new CopyOnWriteArrayList<>();
-    private Color[]          colors = new Color[]{
-            Color.MAGENTA,
-            Color.RED,
-            Color.GOLD,
-            Color.CORAL,
-            Color.AQUA,
-            Color.VIOLET,
-            Color.GREENYELLOW,
-            Color.ORANGE,
-            Color.PINK,
-            Color.SLATEGREY,
-            Color.YELLOW,
-            Color.TOMATO,
-            Color.TAN,
-    };
-    public  Pane             root;
-    private Label            scoreLabel;
-    private Label            heartLabel;
-    private Label            levelLabel;
 
     private boolean loadFromSave = false;
 
-    private Label pauseLabel;
     private boolean isNextLevelCalled = false;
 
 
-
-
-
-
-
-
-
     Stage  primaryStage;
-    Button load    = null;
-    Button newGame = null;
+
     private View view;
+    Model model = new Model();
+
 
 
     @Override
@@ -124,11 +76,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         isNextLevelCalled = false;  // Reset the flag
 
         if (loadFromSave == false) {
-            level++;
-            if (level > 1) {
+            model.incLevel();
+            System.out.println("level now is " + model.getLevel());
+            if (model.getLevel() > 1) {
                 new Score().showMessage("Level Up :)", view);
             }
-            if (level == 18) {
+            if (model.getLevel() == 18) {
                 new Score().showWin(view);
                 return;
             }
@@ -138,11 +91,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             initBoard();
 
         }
-        view = new View(loadFromSave , ball , rect, level);
-
-//        view.initUI(loadFromSave , ball , rect);
-//        view.updateLevel(level);
-
+        view = new View(loadFromSave , ball , rect, model.getLevel() , exhaustTail);
 
         //go to handle method
         view.getScene().setOnKeyPressed(this);
@@ -154,7 +103,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         if (loadFromSave == false) {
             //level 2-17
-            if (level > 1 && level < 18) {
+            if (model.getLevel() > 1 && model.getLevel() < 18) {
                 view.setLoadButtonVisibility(false);
                 view.setNewGameButtonVisibility(false);
                 engine = new GameEngine();
@@ -195,148 +144,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }
 
     }
-    //made the game easier for testing with this CHANCE
-    private static final int CHANCE_DIVISOR = 500;
-    private static final int CHOCO_CHANCE = 50; // 0-49 for chocolate (10%)
-    private static final int HEART_CHANCE = 150; // 50-149 for heart (20%)
-    private static final int STAR_CHANCE = 175; // 150-174 for star (5%)
 
-    private static final int MYSTERY_CHANCE =200 ; //175 - 199 for mystery (5%)
-
-    //refactored initBoard and changed the percentage
     private void initBoard() {
-        switch (level) {
-            case 1: //horizontal line
-                // Layout for level 1
-                for (int i = 0; i < 5; i++) {
-                    int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                    blocks.add(new Block(0, i, colors[i % colors.length], type));
-                }
-                break;
-
-            case 2:// 3 vertical line
-                for (int row = 0; row < 10; row++) {
-                    for (int col = 0; col < 5; col += 2) {
-                        int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                        blocks.add(new Block(row, col, colors[col % colors.length], type));
-                    }
-                }
-                break;
-            case 3: //scatter
-                // Layout for level 2
-                for (int i = 0; i < 5; i++) {
-                    for (int j = 0; j < 5; j++) {
-                        if ((i + j) % 2 == 0) {
-                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(i, j, colors[j % colors.length], type));
-                        }
-                    }
-                }
-                break;
-            // ... Similarly for levels 3, 4, and 5
-            case 4:// x
-                for (int i = 0; i < 5; i++) {
-                    for (int j = 0; j < 5; j++) {
-                        // Place blocks in positions forming an 'X'
-                        if (i == j || i + j == 4) { // Diagonal from top-left to bottom-right and top-right to bottom-left
-                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(i, j, colors[j % colors.length], type));
-                        }
-                    }
-                }
-                break;
-            case 5://hollow square
-                for (int row = 0; row < 7; row++) {
-                    for (int col = 0; col < 5; col++) {
-                        // Add blocks only on the edges, leave the inside hollow
-                        if (row == 0 || row == 6 || col == 0 || col == 6) {
-                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, colors[col % colors.length], type));
-                        }
-                    }
-                }
-                break;
-            case 6://zig zag
-                for (int row = 0; row < 10; row++) {
-                    for (int col = 0; col < 5; col++) {
-                        // Check if we are on a "zig" or "zag" row
-                        if ((row % 10 < 5 && row % 5 == col) || // Zig (moving right)
-                                (row % 10 >= 5 && 4 - (row % 5) == col)) { // Zag (moving left)
-                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, colors[col % colors.length], type));
-                        }
-                    }
-                }
-            break;
-            case 7:// smiley face
-
-                // Positions for the smiley face
-                int[][] smileyPositions = {
-                        {1, 1}, {1, 3},  // Eyes
-                        {4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}, {5, 2}, {6, 2} , // Smiling mouth
-                        {5, 1}, {5, 3}   // Mouth edges
-                };
-
-                // Create blocks at specified positions
-                for (int[] position : smileyPositions) {
-                    int row = position[0];
-                    int col = position[1];
-                    int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                    blocks.add(new Block(row, col, colors[col % colors.length], type));
-                }
-
-                break;
-            case 8: //A
-                for (int row = 0; row < 6; row++) {
-                    for (int col = 0; col < 5; col++) {
-                        // Conditions to create 'A'
-                        if ((row == 3) || // Middle horizontal line
-                                (row == 0 && col == 2) || // Top of 'A'
-                                (row > 0 && ((col == 0 && row < 4) || (col == 4 && row < 4))) || // Left and right sides of 'A'
-                                (row >= 4 && col == 0) || (row >= 4 && col == 4)) { // Stem of 'A'
-                            int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, colors[col % colors.length], type));
-                        }
-                    }
-                }
-                break;
-
-            default:
-                // If level is greater than 5, maybe end the game or start over
-                break;
-        }
-
-//        for (int i = 0; i < 4; i++) {
-//            for (int j = 0; j < level + 1; j++) {
-//                int randomChance = new Random().nextInt(CHANCE_DIVISOR);
-//
-//                if (randomChance % 5 == 0) {
-//                    continue;
-//                }
-//
-//                int type = determineBlockType(randomChance);
-//                blocks.add(new Block(j, i, colors[randomChance % colors.length], type));
-//            }
-//        }
+        blocks = model.setUpBoard();
     }
 
 
-
-    private int determineBlockType(int randomChance) {
-        if (randomChance  < CHOCO_CHANCE) {
-            return Block.BLOCK_CHOCO;
-        } else if (randomChance  < HEART_CHANCE && !isExistHeartBlock) {
-            isExistHeartBlock = true;
-            return Block.BLOCK_HEART;
-        } else if (randomChance  < STAR_CHANCE) {
-            return Block.BLOCK_STAR;
-        } else if(randomChance < MYSTERY_CHANCE) {
-            return Block.BLOCK_MYSTERY;
-        }else{
-            return Block.BLOCK_NORMAL;
-        }
-    }
-//end of initBoard
 
     private boolean isGamePaused = false;
     public static void main(String[] args) {
@@ -413,71 +226,15 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     public static boolean breakStopped = false;
-//    private void move(final int direction) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int sleepTime = 4;
-//
-//                if (breakStopped) {
-//                    return;
-//                }
-//
-//                for (int i = 0; i < 40; i++) {
-//                    final double newX;
-//                    if (xBreak < (sceneWidth - breakWidth) && direction == RIGHT) {
-//                        newX = xBreak + 1;
-//                    } else if (xBreak > 0 && direction == LEFT) {
-//                        newX = xBreak - 1;
-//                    } else {
-//                        break;
-//                    }
-//
-//                    final double newCenterX = newX + halfBreakWidth;
-//
-//
-//                        xBreak = newX;
-//                        centerBreakX = newCenterX;
-//
-//                    try {
-//                        Thread.sleep(sleepTime);
-//                    } catch (InterruptedException e) {
-//                        Thread.currentThread().interrupt();
-//                    }
-//
-//
-//                }
-//            }
-//        }).start();
-//    }
-
-
-
-
-
-
 
     private void initBall() {
-        // Calculate the total height occupied by the blocks
-        int totalBlocksHeight = Block.getHeight() * (level + 1) + Block.getPaddingTop();
-
-        // Set the ball's initial position
-        xBall = sceneWidth / 2; // Center horizontally
-        yBall = 360; // 20 pixels below the blocks
-
-        // Ensure the ball doesn't spawn off-screen
-        if (yBall > sceneHeigt - Ball.ballRadius * 2) {
-            yBall = sceneHeigt - Ball.ballRadius * 2;
-        }
-        // Initialize the ball
-        ball = new Ball(Ball.ballRadius, xBall, yBall);
-
+        ball = new Ball(Ball.ballRadius, sceneWidth/2, 360);
+        exhaustTail = new ExhaustTail(ball);
     }
 
 
     private void initBreak() {
-        rect = new Break(xBreak , yBreak , breakWidth , breakHeight);
-
+        rect = new Break(170 , 640 , breakWidth , breakHeight);
     }
 
 
@@ -492,8 +249,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 //    private boolean colideToLeftBlock           = false;
 //    private boolean colideToTopBlock            = false;
 //
-    public static double vX = 5.000;
-    public static  double vY = 5.000;
 //
 //
 //    private void resetColideFlags() {
@@ -633,81 +388,81 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
 
     private void checkDestroyedCount() {
-        if (destroyedBlockCount == blocks.size()) {
+        if (model.getDestroyedBlockCount() == blocks.size()) {
             //TODO win level todo...
             //System.out.println("You Win")
             nextLevel();
         }
     }
 
-//    private void saveGame() {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                new File(savePathDir).mkdirs();
-//                File file = new File(savePath);
-//                ObjectOutputStream outputStream = null;
-//                try {
-//                    outputStream = new ObjectOutputStream(new FileOutputStream(file));
-//
-//                    outputStream.writeInt(level);
-//                    outputStream.writeInt(score);
-//                    outputStream.writeInt(heart);
-//                    outputStream.writeInt(destroyedBlockCount);
-//
-//
-//                    outputStream.writeDouble(xBall);
-//                    outputStream.writeDouble(yBall);
-//                    outputStream.writeDouble(xBreak);
-//                    outputStream.writeDouble(yBreak);
-//                    outputStream.writeDouble(centerBreakX);
-//                    outputStream.writeLong(time);
-//                    outputStream.writeLong(goldTime);
-//                    outputStream.writeDouble(vX);
-//
-//
-//                    outputStream.writeBoolean(isExistHeartBlock);
-//                    outputStream.writeBoolean(isGoldStauts);
-//                    outputStream.writeBoolean(goDownBall);
-//                    outputStream.writeBoolean(goRightBall);
+    private void saveGame() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new File(savePathDir).mkdirs();
+                File file = new File(savePath);
+                ObjectOutputStream outputStream = null;
+                try {
+                    outputStream = new ObjectOutputStream(new FileOutputStream(file));
+
+                    outputStream.writeInt(model.getLevel());
+                    outputStream.writeInt(model.getScore());
+                    outputStream.writeInt(model.getHeart());
+                    outputStream.writeInt(model.getDestroyedBlockCount());
+
+
+                    outputStream.writeDouble(ball.getBallX());
+                    outputStream.writeDouble(ball.getBallY());
+                    outputStream.writeDouble(rect.getxBreak());
+                    outputStream.writeDouble(rect.getyBreak());
+                    outputStream.writeDouble(rect.getCenterBreakx());
+                    outputStream.writeLong(time);
+                    outputStream.writeLong(goldTime);
+                    outputStream.writeDouble(5);
+
+
+                    outputStream.writeBoolean(isExistHeartBlock);
+                    outputStream.writeBoolean(isGoldStauts);
+                    outputStream.writeBoolean(ball.isGoDownBall());
+                    outputStream.writeBoolean(ball.isGoRightBall());
 //                    outputStream.writeBoolean(colideToBreak);
 //                    outputStream.writeBoolean(colideToBreakAndMoveToRight);
 //                    outputStream.writeBoolean(colideToRightWall);
 //                    outputStream.writeBoolean(colideToLeftWall);
-//                    outputStream.writeBoolean(colideToRightBlock);
-//                    outputStream.writeBoolean(colideToBottomBlock);
-//                    outputStream.writeBoolean(colideToLeftBlock);
-//                    outputStream.writeBoolean(colideToTopBlock);
-//
-//                    ArrayList<BlockSerializable> blockSerializables = new ArrayList<BlockSerializable>();
-//                    for (Block block : blocks) {
-//                        if (block.isDestroyed) {
-//                            continue;
-//                        }
-//                        blockSerializables.add(new BlockSerializable(block.row, block.column, block.type));
-//                    }
-//
-//                    outputStream.writeObject(blockSerializables);
-//
-//                    new Score().showMessage("Game Saved", Main.this);
-//
-//
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    try {
-//                        outputStream.flush();
-//                        outputStream.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
-//
-//    }
+                    outputStream.writeBoolean(ball.isColideToRightBlock());
+                    outputStream.writeBoolean(ball.isColideToBottomBlock());
+                    outputStream.writeBoolean(ball.isColideToLeftBlock());
+                    outputStream.writeBoolean(ball.isColideToTopBlock());
+
+                    ArrayList<BlockSerializable> blockSerializables = new ArrayList<BlockSerializable>();
+                    for (Block block : blocks) {
+                        if (block.isDestroyed) {
+                            continue;
+                        }
+                        blockSerializables.add(new BlockSerializable(block.row, block.column, block.type));
+                    }
+
+                    outputStream.writeObject(blockSerializables);
+
+                    new Score().showMessage("Game Saved", view);
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        outputStream.flush();
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+    }
 
 //    private void loadGame() {
 //
@@ -769,7 +524,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             @Override
             public void run() {
                 try {
-                    vX = 1.000;
 
                     //engine.stop();
                     ball.resetColideFlags();
@@ -786,7 +540,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     blocks.clear();
                     chocos.clear();
                     mysteries.clear();
-                    destroyedBlockCount = 0;
+                    model.setDestroyedBlockCount(0);
                     start(primaryStage);
 
                 } catch (Exception e) {
@@ -799,11 +553,10 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     public void restartGame() {
 
         try {
-            level = 0;
-            heart = 3;
-            score = 0;
-            vX = 1.000;
-            destroyedBlockCount = 0;
+            model.setLevel(0);
+            model.setHeart(3);
+            model.setScore(0);
+            model.setDestroyedBlockCount(0);
             ball.resetColideFlags();
             ball.setGoDownBall(true);
 
@@ -830,12 +583,14 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             @Override
             public void run() {
 
-                view.updateScore(score);
-                view.updateHeart(heart);
+                view.updateScore(model.getScore());
+                view.updateHeart(model.getHeart());
                 rect.setX(Break.getxBreak());
                 rect.setY(Break.getyBreak());
                 ball.setCenterX(ball.getBallX());
+
                 ball.setCenterY(ball.getBallY());
+                view.updateExhaustTail();
 
                 for (Bonus choco : chocos) {
                     choco.block.setY(choco.y);
@@ -852,13 +607,13 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
                 if (hitCode != Block.NO_HIT) {
                     Soundeffects.playBlockHit();
-                    score += 1;
+                    model.incScore();
 
                     new Score().show(block.x, block.y, 1, view);
 
                     block.rect.setVisible(false);
                     block.isDestroyed = true;
-                    destroyedBlockCount++;
+                    model.incDestroyedBlockCount();
                     ball.resetColideFlags();
 
                     if (block.type == Block.BLOCK_CHOCO) {
@@ -882,12 +637,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         ball.setFill(new ImagePattern(new Image("goldball.png")));
                         System.out.println("gold ball");
                         view.addStyleClassToRoot("goldRoot");
-
                         isGoldStauts = true;
                     }
 
                     if (block.type == Block.BLOCK_HEART) {
-                        heart++;
+                        model.incHeart();
                         Soundeffects.playHeartUp();
                     }
 
@@ -910,16 +664,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onPhysicsUpdate() {
         //if all destroyed move to next lvl
-        checkDestroyedCount();
+        if(model.allBlocksDestroyed()){
+            nextLevel();
+        }
         ball.setPhysicsToBall();
         if (ball.hasHitSceneBottom()) {
             // Handle the scenario when the ball hits the bottom
             if (!isGoldStauts) {
-                heart--;
+                model.decHeart();
                 Soundeffects.playHeartDown();
                 new Score().show(sceneWidth / 2, sceneHeigt / 2, -1, view);
 
-                if (heart == 0) {
+                if (model.getHeart() == 0) {
                     new Score().showGameOver(this ,view);
                     engine.stop();
                 }
@@ -942,7 +698,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 Soundeffects.playItemCatch();
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
-                score += 3;
+                model.inc3Score();
                 Platform.runLater(() -> {
                     choco.block.setVisible(false);
                     new Score().show(choco.x, choco.y, 3, view);
@@ -965,7 +721,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                     mystery.block.setVisible(false);
                 });
                 if (Math.random() < 0.1) {
-                    score += 5;
+                    model.inc5Score();
                     new Score().show(mystery.x, mystery.y, 5, view);
                 }else {
                     System.out.println("Oh No ! FREEZE for 3s");
@@ -980,7 +736,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             mystery.y += ((time - mystery.timeCreated) / 1000.000) + 1.000;
         }
 
-        //System.out.println("time is:" + time + " goldTime is " + goldTime);
 
     }
 
@@ -991,3 +746,4 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
 }
+ 

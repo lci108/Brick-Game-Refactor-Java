@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
@@ -17,14 +18,17 @@ public class View {
     private Button load, newGame;
     private Scene scene;
     private int score, heart, level;
+    private ExhaustTail exhaustTail;
 
 
-    public View(boolean loadFromSave, Ball ball, Break rect,int level) {
-        initUI(loadFromSave , ball , rect);
+
+    public View(boolean loadFromSave, Ball ball, Break rect,int level ,ExhaustTail exhaustTail) {
+        this.exhaustTail = exhaustTail;
+        initUI(loadFromSave , ball , rect );
         updateLevel(level);
     }
 
-    public void initUI(boolean loadFromSave, Ball ball, Break rect) {
+    public void initUI(boolean loadFromSave, Ball ball, Break rect ) {
         penaltyLabel = new Label("PENALTY TIME");
         penaltyLabel.setTranslateX(200); // Set X position
         penaltyLabel.setTranslateY(300);
@@ -53,15 +57,28 @@ public class View {
         // Add elements to root pane
         root = new Pane();
         if (loadFromSave == false) {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel, pauseLabel ,newGame, load ,penaltyLabel);
+            root.getChildren().addAll((Node) rect, ball, scoreLabel, heartLabel, levelLabel, pauseLabel ,newGame, load ,penaltyLabel);
+
         } else {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel , pauseLabel, penaltyLabel );
+            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel , pauseLabel, penaltyLabel);
+
         }
         for (Block block : blocks) {
             root.getChildren().add(block.rect);
         }
+        for (ImageView particle : exhaustTail.getParticles()) {
+            root.getChildren().add(particle);
+        }
         scene = new Scene(root, sceneWidth , sceneHeigt );
         scene.getStylesheets().add("style.css");
+    }
+    public void updateExhaustTail() {
+        exhaustTail.update(); // Update exhaust tail
+        for (ImageView particle : exhaustTail.getParticles()) {
+            if (!root.getChildren().contains(particle)) {
+                root.getChildren().add(particle); // Add new particles to the root
+            }
+        }
     }
     
 
