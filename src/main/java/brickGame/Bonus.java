@@ -34,19 +34,15 @@ public class Bonus implements Serializable {
         block.setX(x);
         block.setY(y);
 
-        // Decide on the image to use based on the block type
         String url = chooseImageForType(this.blockType);
         block.setFill(new ImagePattern(new Image(url)));
     }
     private String chooseImageForType(int blockType) {
         if (blockType == Block.BLOCK_CHOCO) {
-            // Randomly return one of the bonus images
             return new Random().nextInt(20) % 2 == 0 ? "bonus1.png" : "bonus2.png";
         } else if (blockType == Block.BLOCK_MYSTERY) {
-            // Return the mystery image URL
             return "mystery.png";
         }
-        // If no known block type, return null or perhaps a default image
         return null;
     }
 

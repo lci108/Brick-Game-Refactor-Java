@@ -18,6 +18,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import java.util.Random;
 
+import static brickGame.Block.*;
+
 
 public class Main extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
     private ExhaustTail exhaustTail;
@@ -578,17 +580,18 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     @Override
     public void onUpdate() {
+
         //ui
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+
 
                 view.updateScore(model.getScore());
                 view.updateHeart(model.getHeart());
                 rect.setX(Break.getxBreak());
                 rect.setY(Break.getyBreak());
                 ball.setCenterX(ball.getBallX());
-
                 ball.setCenterY(ball.getBallY());
                 view.updateExhaustTail();
 
@@ -604,18 +607,22 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         //if smtg collide with ball
         if (ball.getBallY() >= Block.getPaddingTop() && ball.getBallY() <= (Block.getHeight() * (10)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
+                int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY() , time);
                 if (hitCode != Block.NO_HIT) {
                     Soundeffects.playBlockHit();
                     model.incScore();
-
                     new Score().show(block.x, block.y, 1, view);
-
+                    if(block.type == BLOCK_SPOOKY){
+                        Block newBlock = new Block(new Random().nextInt(10), new Random().nextInt(5), Block.BLOCK_SPOOKED);
+                        blocks.add(newBlock);
+                        view.addBlockToRoot(newBlock);
+                    }
                     block.rect.setVisible(false);
                     block.isDestroyed = true;
                     model.incDestroyedBlockCount();
-                    ball.resetColideFlags();
 
+
+                    ball.resetColideFlags();
                     if (block.type == Block.BLOCK_CHOCO) {
                         final Bonus choco = new Bonus(block.row, block.column , block.type);
                         choco.timeCreated = time;
@@ -629,8 +636,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         view.addToRoot(mystery.block);
                         mysteries.add(mystery);
                     }
-
-
                     if (block.type == Block.BLOCK_STAR) {
                         Soundeffects.playGoldBlockHit();
                         goldTime = time;
@@ -639,14 +644,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                         view.addStyleClassToRoot("goldRoot");
                         isGoldStauts = true;
                     }
-
                     if (block.type == Block.BLOCK_HEART) {
                         model.incHeart();
                         Soundeffects.playHeartUp();
                     }
 
                     ball.onUpdateBall(hitCode);
-
                 }
 
                 //TODO hit to break and some work here....
