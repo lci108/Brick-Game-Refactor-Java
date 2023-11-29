@@ -46,6 +46,10 @@ public class Block implements Serializable {
 
     public static int BLOCK_MYSTERY =103;
 
+    public static final int BLOCK_SPOOKY = 104;
+
+    public static final int BLOCK_SPOOKED = 105;
+
 
     public Block(int row, int column, int type) {
         this.row = row;
@@ -79,6 +83,15 @@ public class Block implements Serializable {
             Image image = new Image("mystery_block.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
+        }
+        else if (type == BLOCK_SPOOKY){
+            Image image = new Image("spooky.png");
+            ImagePattern pattern = new ImagePattern(image);
+            rect.setFill(pattern);
+        } else if(type == BLOCK_SPOOKED) {
+            Image image = new Image("spooked.png");
+            ImagePattern pattern = new ImagePattern(image);
+            rect.setFill(pattern);
         }else{
             String imagePath = "block" + (new Random().nextInt(8)+1) + ".png"; // type + 1 to match your image naming
             Image image = new Image(imagePath);
@@ -91,8 +104,9 @@ public class Block implements Serializable {
 
 
 
+
     // Assuming the blocks are axis-aligned rectangles and the ball is a circle
-    public int checkHitToBlock(double xBall, double yBall) {
+    public int checkHitToBlock(double xBall, double yBall , long currentTime) {
 
         if (isDestroyed) {
             return NO_HIT;
@@ -130,7 +144,6 @@ public class Block implements Serializable {
 
         return NO_HIT; // No collision occurred
     }
-
 
 
 

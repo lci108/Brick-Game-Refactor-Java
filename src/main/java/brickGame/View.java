@@ -80,6 +80,13 @@ public class View {
             }
         }
     }
+    public void addBlockToRoot(Block spook) {
+        Platform.runLater(() -> {
+            root.getChildren().add(spook.rect);
+        });
+    }
+
+
     
 
     public Scene getScene() {

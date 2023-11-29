@@ -96,21 +96,9 @@ public class Model {
     private static final int HEART_CHANCE = 150;
     private static final int STAR_CHANCE = 175;
     private static final int MYSTERY_CHANCE = 200;
-    private static final Color[] colors = new Color[]{
-            Color.MAGENTA,
-            Color.RED,
-            Color.GOLD,
-            Color.CORAL,
-            Color.AQUA,
-            Color.VIOLET,
-            Color.GREENYELLOW,
-            Color.ORANGE,
-            Color.PINK,
-            Color.SLATEGREY,
-            Color.YELLOW,
-            Color.TOMATO,
-            Color.TAN,
-    };
+
+    private static final int SPOOKY_CHANCE = 500;
+
     public CopyOnWriteArrayList<Block> setUpBoard(){
         switch (level) {
             case 1: //horizontal line
@@ -216,16 +204,18 @@ public class Model {
         return blocks;
     }
     private int determineBlockType(int randomChance) {
-        if (randomChance  < CHOCO_CHANCE) {
+        if (randomChance < CHOCO_CHANCE) {
             return Block.BLOCK_CHOCO;
-        } else if (randomChance  < HEART_CHANCE && !isExistHeartBlock) {
+        } else if (randomChance < HEART_CHANCE && !isExistHeartBlock) {
             isExistHeartBlock = true;
             return Block.BLOCK_HEART;
-        } else if (randomChance  < STAR_CHANCE) {
+        } else if (randomChance < STAR_CHANCE) {
             return Block.BLOCK_STAR;
-        } else if(randomChance < MYSTERY_CHANCE) {
+        } else if (randomChance < MYSTERY_CHANCE) {
             return Block.BLOCK_MYSTERY;
-        }else{
+        } else if (randomChance < SPOOKY_CHANCE) {
+            return Block.BLOCK_SPOOKY;
+        } else {
             return Block.BLOCK_NORMAL;
         }
     }
