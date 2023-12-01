@@ -12,7 +12,7 @@ import java.util.Random;
 import static brickGame.Ball.ballRadius;
 
 public class Block implements Serializable {
-    private static Block block = new Block(-1, -1,99);
+    private static final Block block = new Block(-1, -1,99);
 
     public int row;
     public int column;
@@ -20,16 +20,15 @@ public class Block implements Serializable {
 
     public boolean isDestroyed = false;
 
-    private Color color;
     public int type;
 
     public int x;
     public int y;
 
-    private int width = 80;
-    private int height = 30;
-    private int paddingTop = height * 2;
-    private int paddingH = 40;
+    private final int width = 80;
+    private final int height = 30;
+    private final int paddingTop = height * 2;
+    private final int paddingH = 40;
     public Rectangle rect;
 
 
@@ -106,7 +105,7 @@ public class Block implements Serializable {
 
 
     // Assuming the blocks are axis-aligned rectangles and the ball is a circle
-    public int checkHitToBlock(double xBall, double yBall , long currentTime) {
+    public int checkHitToBlock(double xBall, double yBall ) {
 
         if (isDestroyed) {
             return NO_HIT;

@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+import static brickGame.Controller.*;
 import static brickGame.Main.*;
 
 
@@ -11,6 +12,18 @@ public class Break extends Rectangle {
 
     public static double getxBreak() {
         return xBreak;
+    }
+
+    public static void setxBreak(double xBreak) {
+        Break.xBreak = xBreak;
+    }
+
+    public static void setyBreak(double yBreak) {
+        Break.yBreak = yBreak;
+    }
+
+    public static void setCenterBreakx(double centerBreakx) {
+        Break.centerBreakx = centerBreakx;
     }
 
     private static double xBreak;
@@ -27,7 +40,7 @@ public class Break extends Rectangle {
     }
 
     private static double centerBreakx;
-    private static int halfBreakWidth = breakWidth / 2;
+    private static final int halfBreakWidth = breakWidth / 2;
 
 
 
@@ -38,9 +51,9 @@ public class Break extends Rectangle {
         super(width, height, new ImagePattern(new Image("block.png")));
         this.setX(x);
         this.setY(y);
-        this.breakWidth = width;
-        this.xBreak = x;
-        this.yBreak = y;
+        breakWidth = width;
+        xBreak = x;
+        yBreak = y;
     }
 
     public static void move(final int direction) {
@@ -55,7 +68,7 @@ public class Break extends Rectangle {
 
                 for (int i = 0; i < 40; i++) {
                     final double newX;
-                    if (xBreak < (Main.sceneWidth - breakWidth) && direction == RIGHT) {
+                    if (xBreak < (Controller.sceneWidth - breakWidth) && direction == RIGHT) {
                         newX = xBreak + 1;
                     } else if (xBreak > 0 && direction == LEFT) {
                         newX = xBreak - 1;

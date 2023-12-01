@@ -1,14 +1,9 @@
 package brickGame;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
+
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
+
 
 public class Model {
     public int getLevel() {
@@ -39,7 +34,7 @@ public class Model {
         this.heart--;
     }
 
-    private int heart = 3;
+    private int heart = 5;
 
     public int getScore() {
         return score;
@@ -52,9 +47,7 @@ public class Model {
     public void incScore(){
         this.score++;
     }
-    public void decScore(){
-        this.score--;
-    }
+
 
     public void inc3Score(){
         this.score = score + 3;
@@ -79,27 +72,20 @@ public class Model {
 
     private int destroyedBlockCount = 0;
 
-    private boolean isGoldStatus = false;
     private boolean isExistHeartBlock = false;
-    private boolean isNextLevelCalled = false;
-    private double xBall;
-    private double yBall;
-    private Ball ball;
 
-    private CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<Bonus> chocos = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<Bonus> mysteries = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
 
     // Constants
     private static final int CHANCE_DIVISOR = 500;
     private static final int CHOCO_CHANCE = 50;
     private static final int HEART_CHANCE = 150;
-    private static final int STAR_CHANCE = 175;
-    private static final int MYSTERY_CHANCE = 200;
+    private static final int STAR_CHANCE = 160;
+    private static final int MYSTERY_CHANCE = 170;
 
-    private static final int SPOOKY_CHANCE = 500;
-
+    private static final int SPOOKY_CHANCE = 180;
     public CopyOnWriteArrayList<Block> setUpBoard(){
+
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1
@@ -220,7 +206,7 @@ public class Model {
         }
     }
     public boolean allBlocksDestroyed() {
-        if (destroyedBlockCount == blocks.size()) {
+        if(destroyedBlockCount == blocks.size()) {
             return true;
         }
         else{

@@ -47,19 +47,17 @@ public class Score {
         timeline.play();
     }
 
-    public void showGameOver(final Main main , final View view) {
+    public void showGameOver(final Controller controller , final View view) {
         Platform.runLater(() -> {
-            Label label = new Label("Game Over :(");
-            label.setTranslateX(200);
-            label.setTranslateY(250);
-            label.setScaleX(2);
-            label.setScaleY(2);
+
 
             Button restart = new Button("Restart");
-            restart.setTranslateX(220);
-            restart.setTranslateY(300);
-            restart.setOnAction(event -> main.restartGame());
-            view.addToRoot(label);
+            restart.setTranslateX(200);
+            restart.setTranslateY(500);
+            restart.getStyleClass().add("button-style");
+            restart.setOnAction(event -> controller.restartGame());
+            view.removeAllElementsFromRoot();
+            view.addStyleClassToRoot("gameOverRoot");
             view.addToRoot(restart);
 
         });
@@ -67,13 +65,8 @@ public class Score {
 
     public void showWin(final View view) {
         Platform.runLater(() -> {
-            Label label = new Label("You Win :)");
-            label.setTranslateX(200);
-            label.setTranslateY(250);
-            label.setScaleX(2);
-            label.setScaleY(2);
-            view.addToRoot(label);
-
+            view.removeAllElementsFromRoot();
+            view.addStyleClassToRoot("winRoot");
         });
     }
 }
