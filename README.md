@@ -1,5 +1,7 @@
 # COMP2042_CW_efycl17
-# Brick Breaker Game - Enhanced Edition
+# Brick Breaker Game
+Brick Game is a JavaFX-based game that combines classic block-breaking gameplay with exciting new features. The game has undergone significant enhancements, including the addition of new blocks, improved levels, visual effects, and sound elements.
+
 
 ## Compilation Instructions
 
@@ -114,6 +116,257 @@ The following feature was contemplated but not implemented, accompanied by an ex
 - **Attempts to Resolve**: Several approaches, including cooldown periods, hit flags, and tweaking ball physics, were experimented with to address the issue. However, none of these attempts proved successful in achieving the intended behavior.
 
 - **Decision**: Due to the challenges in ensuring the proper interaction between the ball, `FORTIFIED_BLOCK`, and `BROKEN_BLOCK`, and considering the complexity of implementing a cooldown mechanism that didn't compromise the game's fluidity, the decision was made to defer the implementation of this feature. While the idea was intriguing, the technical challenges outweighed the potential gameplay enhancement in this specific context.
+
+  ## New Java Classes
+
+### 1) ExhaustTail
+
+#### Purpose
+The `ExhaustTail` class is responsible for creating and managing the exhaust trail effect behind the ball in the game. It enhances the visual appeal by adding dynamic particles that follow the ball's movement.
+
+#### Location
+- Package: `brickGame`
+- File: `ExhaustTail.java`
+
+#### Methods
+- **Constructor (`ExhaustTail(Ball ball)`):** Initializes the `ExhaustTail` with a reference to the `Ball` object it is associated with, and sets up the particle image, list, and randomizer.
+  
+- **`update()`:** Invoked to update the state of the exhaust trail. It creates new particles and manages their fading effect.
+
+- **`createParticle()`:** Generates new `ImageView` particles with randomized properties, such as position, size, and opacity.
+
+- **`fadeParticles()`:** Handles the fading effect of existing particles, gradually reducing their opacity until they disappear.
+
+- **`getParticles()`:** Returns the list of `ImageView` particles for rendering.
+
+### 2) Soundeffects
+
+#### Purpose
+The `Soundeffects` class manages the game's sound effects. It provides methods to play different sound effects associated with various in-game events, enhancing the auditory experience for the player.
+
+#### Location
+- Package: `brickGame`
+- File: `Soundeffects.java`
+
+#### Methods
+- **Constructor (`Soundeffects()`):** Initializes `MediaPlayer` instances for various sound effects by loading the corresponding audio files.
+
+- **`createPlayer(String soundFileName)`:** Creates a `MediaPlayer` for a given sound file name.
+
+- **`playSound(MediaPlayer player)`:** Plays a sound using the provided `MediaPlayer` instance.
+
+- **Sound-specific methods (`playBlockHit()`, `playItemCatch()`, etc.)**: Trigger playback of specific sound effects for different in-game events.
+
+ ## Modified Java Classes
+### 1) Ball 
+#### Constructors
+- `public Ball(double radius, double initialX, double initialY);`
+  - Initializes the ball with a specified radius and initial coordinates.
+
+#### Physics and Movement
+- `public void setPhysicsToBall();`
+  - Encapsulates physics calculations, collision handling, and movement logic for the ball.
+
+#### Collision Handling
+- `public void onUpdateBall(int hitCode);`
+  - Handles ball updates based on collision events specified by `hitCode`.
+- `private double calculateVelocityX(double relation);`
+  - Calculates the new horizontal velocity based on the relation parameter.
+- `public void resetColideFlags();`
+  - Resets collision flags, promoting cleaner code.
+
+#### Other Methods
+- `public void resetHitBottomFlag();`
+  - Resets the flag indicating that the ball has hit the bottom of the game scene.
+- getters and setters
+#### Explaination
+- Moved Ball-Specific Methods:
+Methods related specifically to the behavior and properties of the ball were separated from the main class.By isolating ball-specific behaviors into the Ball class, we achieve better encapsulation and a cleaner separation of concerns. The setPhysicsToBall method now encapsulates the intricate physics, collision, and movement logic, making the code more readable and maintainable.
+
+### 2) Break
+
+#### Constructors
+- `public Break(double x, double y, int width, int height);`
+  - Initializes the Break object with specified coordinates, width, and height.
+
+#### Movement
+- `public static void move(final int direction);`
+  - Initiates the movement of the Break object in the specified direction using a separate thread.
+
+#### Other methods
+- getters and setters
+
+#### Explaination
+- Moved Break-Specific Methods:
+Methods related specifically to the behavior and properties of the break were moved to the Break class.By isolating break-related methods, we enhance code organization and adhere to the principles of encapsulation, making the codebase more modular and comprehensible.
+
+### 3) Model
+
+#### Methods
+- **`public CopyOnWriteArrayList<Block> setUpBoard()`:**
+  - Sets up the initial arrangement of blocks on the game board based on the player's level.
+
+- **`private int determineBlockType(int randomChance)`:**
+  - Determines the type of block to be created based on a random chance.
+
+- **`public boolean allBlocksDestroyed()`:**
+  - Checks if all blocks on the game board have been destroyed.
+#### Other Methods 
+- getters and setters
+
+#### Explanation
+- The `Model` class manages key aspects of the game state, including levels, hearts, scores, and block arrangements on the board. It encapsulates the logic for setting up the game board based on the player's level and determining the type of blocks to be created. The methods provide a way to interact with and update the game state as the player progresses.
+
+### 4) View
+#### Constructors
+- `public View(boolean loadFromSave, Ball ball, Break rect, int level, ExhaustTail exhaustTail);`
+  - Initializes the View with the specified parameters.
+
+#### Methods
+- `public void initUI(boolean loadFromSave, Ball ball, Break rect);`
+  - Initializes the user interface elements, including buttons, labels, and the game scene.
+
+- `public void updateExhaustTail();`
+  - Updates the exhaust tail effect following the ball's movement.
+
+- `public void addBlockToRoot(Block spook);`
+  - Adds a block to the root pane.
+
+- `public Scene getScene();`
+  - Returns the game scene.
+
+- `public Button getLoadButton();`
+  - Returns the load button.
+
+- `public Button getNewGameButton();`
+  - Returns the new game button.
+
+- `public void setPenaltyLabelVisibility(boolean visible);`
+  - Sets the visibility of the penalty label.
+
+- `public void setPauseLabelLabelVisibility(boolean visible);`
+  - Sets the visibility of the pause label.
+
+- `public void setLoadButtonVisibility(boolean visible);`
+  - Sets the visibility of the load button.
+
+- `public void setNewGameButtonVisibility(boolean visible);`
+  - Sets the visibility of the new game button.
+
+- `public void addToRoot(Node node);`
+  - Adds a JavaFX node to the root pane.
+
+- `public void removeStyleClassFromRoot(String styleClass);`
+  - Removes a style class from the root pane.
+
+- `public void addStyleClassToRoot(String styleClass);`
+  - Adds a style class to the root pane.
+
+- `public void updateScore(int score);`
+  - Updates the score label.
+
+- `public void updateHeart(int heart);`
+  - Updates the heart label.
+
+- `public void updateLevel(int level);`
+  - Updates the level label.
+
+- `public void updatePenaltyTime(int i);`
+  - Updates the penalty label with the specified time.
+
+- `public void removeAllElementsFromRoot();`
+  - Removes all children nodes and style classes from the root pane.
+#### Explaination 
+The `View` class plays a crucial role in managing the graphical user interface (GUI) elements for the game. These methods collectively manage the presentation and interaction aspects of the game. The `getScene()` method acts as an interface for external components to access and manipulate the graphical scene, contributing to the modular design of the application.
+
+### 5) Controller
+
+#### Main Methods
+
+- `public void onUpdate()`
+  - Responsible for updating the game state and handling various events during each frame.
+  - Checks for collisions between the ball and blocks, updating the score and triggering special effects.
+  - Manages the appearance of bonus items (chocolates, mysteries) and their interactions with the Break object.
+  - Monitors the gold status, adjusting the ball's appearance and handling its duration.
+  - Handles the event when the ball hits the bottom of the game scene, decreasing the player's heart count and ending the game if hearts run out.
+  - Invokes the `nextLevel()` method when all blocks are destroyed, advancing the game to the next level.
+  - Updates the graphical user interface to reflect the current score, heart count, and other relevant information.
+
+- `public void onPhysicsUpdate()`
+  - Manages physics-related updates during each frame.
+  - Invokes the `setPhysicsToBall()` method for the ball, encapsulating physics calculations, collision handling, and movement logic.
+  - Handles specific game mechanics, such as freezing the Break object for a penalty duration if triggered.
+  - Controls the movement and gravity of bonus items (chocolates, mysteries) based on elapsed time.
+
+- `public void onTime(long time)`
+  - Updates the elapsed time during the game.
+  - Enables tracking of time-based events, such as the duration of the gold status.
+  - Utilizes the time parameter to synchronize game elements and animations.
+
+- `public void restartGame()`
+  - Restarts the game by resetting the level, score, heart count, and other relevant parameters.
+  - Initiates the creation of a new game state, allowing the player to start over.
+
+- `public void nextLevel()`
+  - Advances the game to the next level, resetting necessary parameters.
+  - Clears existing blocks and bonus items, preparing the game state for the next level's setup.
+  - Invokes the `start()` method to initiate rendering and updating of the new game state.
+
+
+#### Explanation
+The `Controller` class in the Model-View-Controller (MVC) architecture acts as the central hub for managing game logic and user input. It connects the `Model`, which represents the game state, with the `View`, responsible for rendering the graphical user interface. The `onUpdate()` method handles frame-by-frame updates, checking collisions, updating scores, and interacting with various game elements. The `onPhysicsUpdate()` method manages physics-related aspects, ensuring smooth ball movement and handling penalties. The `onTime()` method tracks the elapsed time, facilitating time-dependent game mechanics.The `restartGame()` and `nextLevel()` methods provide functionality to restart the game and advance to the next level, respectively. Overall, the `Controller` plays a pivotal role in orchestrating the game's behavior and maintaining a separation of concerns within the MVC design pattern.
+
+### 6) GameEngine
+
+#### Changes Made
+- **Thread to Timeline Conversion:**
+  - Replaced the usage of threads with JavaFX Timelines for various game-related tasks, such as frame updates, physics calculations, and time tracking.
+  - Utilized JavaFX Timelines for onUpdate, onPhysicsUpdate, and onTime callbacks, improving synchronization and providing a more streamlined approach to handle periodic tasks in a JavaFX application.
+
+#### Explanation
+The `GameEngine` class underwent a modification in its implementation by replacing the traditional thread-based approach with JavaFX Timelines. This change enhances the synchronization of various game-related tasks and aligns with the conventions of JavaFX applications. The onUpdate, onPhysicsUpdate, and onTime callbacks are now executed within the context of JavaFX Timelines, ensuring a more robust and thread-safe execution of game logic. Overall, this adjustment contributes to the coherence and efficiency of the game engine in a JavaFX environment.
+
+### 7) Block
+
+#### Changes Made
+- **Refactoring of Collision Detection:**
+  - Modified the `checkHitToBlock` method for improved collision detection.
+  - Replaced the initial collision detection logic with a more generalized and accurate approach for handling collisions on all sides of the block.
+  - The updated logic checks for overlap in both X and Y directions, calculating the depth of overlap in each direction and determining the side of collision based on the minimum overlap.
+
+#### Explanation
+The `Block` class underwent a modification in the `checkHitToBlock` method to enhance the accuracy and generality of collision detection. The original method, which relied on specific conditions for each side of the block, was replaced with a more systematic approach. The revised logic now considers overlapping in both X and Y directions, determining the depth of overlap in each direction. By comparing these overlaps, the method accurately identifies the side of the block where the collision occurred. This modification improves the robustness and reliability of collision detection in the game, ensuring a more consistent and realistic gameplay experience.
+
+
+## Unexpected Problems Encountered 
+- (As mentioned in the  Implemented but not working properly)
+
+### 1. Double Execution of `nextLevel()`
+
+**Issue:** After transitioning from using traditional threads to JavaFX Timelines, a peculiar problem arose where the `nextLevel()` method was being executed twice when all blocks were destroyed, causing the game to skip levels.
+
+**Solution:** To mitigate this issue, flags were introduced to ensure that `nextLevel()` runs only once per update cycle. While this addressed the symptom, the root cause behind the double execution remains elusive, necessitating further investigation.
+
+### 2. Ball Penetrating Multiple Blocks
+
+**Issue:** The ball occasionally penetrated multiple blocks when hitting from certain angles, even after modifying the collision detection logic.
+
+**Solution:** The `checkHitToBlock()` logic was revamped to provide more accurate collision checks. Additionally, a new variable, `ballRadius`, was introduced to define the ball's size more precisely. However, occasional penetration may still occur, revealing the complexity of handling collisions at steep angles.
+
+Addressing these challenges involved a combination of code modifications, introducing flags, and enhancing collision detection logic. While these solutions alleviate the immediate issues, they also highlight areas for potential future refinement and optimization. Ongoing efforts will be directed towards a more thorough understanding of the root causes behind these unexpected behaviors.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
