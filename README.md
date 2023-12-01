@@ -355,20 +355,3 @@ The `Block` class underwent a modification in the `checkHitToBlock` method to en
 
 Addressing these challenges involved a combination of code modifications, introducing flags, and enhancing collision detection logic. While these solutions alleviate the immediate issues, they also highlight areas for potential future refinement and optimization. Ongoing efforts will be directed towards a more thorough understanding of the root causes behind these unexpected behaviors.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Enjoy the Enhanced Experience!
-We hope you thoroughly enjoy these new features and enhancements in the Brick Breaker Game - Enhanced Edition. Feel free to explore, adapt, and make the most out of the customizable elements to tailor the gameplay to your liking. Happy gaming!
