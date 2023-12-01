@@ -5,12 +5,16 @@ import javafx.scene.media.MediaPlayer;
 import java.net.URL;
 
 public class Soundeffects {
-    private MediaPlayer blockHitPlayer;
-    private MediaPlayer itemCatchPlayer;
-    private MediaPlayer heartUpPlayer;
-    private MediaPlayer heartDownPlayer;
-    private MediaPlayer goldTimePlayer;
-    private MediaPlayer freezeTimePlayer;
+    private final MediaPlayer blockHitPlayer;
+    private final MediaPlayer itemCatchPlayer;
+    private final MediaPlayer heartUpPlayer;
+    private final MediaPlayer heartDownPlayer;
+    private final MediaPlayer goldTimePlayer;
+    private final MediaPlayer freezeTimePlayer;
+
+    private final MediaPlayer spookyPlayer;
+    private final MediaPlayer winPlayer;
+    private final MediaPlayer gameOverPlayer;
 
 
     public Soundeffects() {
@@ -20,6 +24,9 @@ public class Soundeffects {
         heartDownPlayer = createPlayer("heart_down.mp3");
         goldTimePlayer = createPlayer("goldblock_hit.mp3");
         freezeTimePlayer = createPlayer("ice_time.mp3");
+        spookyPlayer = createPlayer("spooky.mp3");
+        winPlayer = createPlayer("win.mp3");
+        gameOverPlayer = createPlayer("gameOver.mp3");
     }
 
     private MediaPlayer createPlayer(String soundFileName) {
@@ -69,6 +76,14 @@ public class Soundeffects {
     public void playFreezeTime() {
         playSound(freezeTimePlayer);
     }
+
+    public void playSpooky(){
+        playSound(spookyPlayer);
+    }
+
+    public void playWin(){playSound(winPlayer);}
+
+    public void playGameOver(){playSound(gameOverPlayer);}
 
 
 

@@ -21,6 +21,20 @@
      -fx-background-position: center center;
 
 }
+.gameOverRoot {
+     -fx-background-image: url("gameover.png");
+     -fx-background-repeat: no-repeat;
+     -fx-background-size: stretch;
+     -fx-background-position: center center;
+
+}
+.winRoot {
+     -fx-background-image: url("win.jpg");
+     -fx-background-repeat: no-repeat;
+     -fx-background-size: stretch;
+     -fx-background-position: center center;
+
+}
 
 .label {
     -fx-font-family: 'Times New Roman', 'Georgia', serif;
@@ -29,5 +43,12 @@
     -fx-font-size: 15px;
     -fx-font-weight: bold;
 }
+.button-style {
+    -fx-font-size: 20px;
+    -fx-background-color: #FF0000;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+}
+
 
 

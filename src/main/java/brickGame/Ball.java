@@ -4,80 +4,69 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
-import java.util.List;
-
 public class Ball extends Circle {
-    private Model model;
     public static final int ballRadius = 10;
 
     private double vX;
     private double vY;
 
-    public void setGoDownBall(boolean GODOWNBALL) {
-        goDownBall = GODOWNBALL;
+    public  void setGoDownBall(boolean GODOWNBALL) {
+        this.goDownBall = GODOWNBALL;
     }
 
-    private static boolean goDownBall = true;
-    private static boolean goRightBall = false;
+    private  boolean goDownBall = true;
+    private  boolean goRightBall = false;
 
-    public static boolean isGoDownBall() {
-        return goDownBall;
+    public boolean isGoDownBall() {
+        return this.goDownBall;
     }
 
-    public static boolean isGoRightBall() {
-        return goRightBall;
+    public boolean isGoRightBall() {
+        return this.goRightBall;
     }
 
-    public static void setGoRightBall(boolean goRightBall) {
-        Ball.goRightBall = goRightBall;
+    public  void setGoRightBall(boolean goRightBall) {
+        this.goRightBall = goRightBall;
     }
 
-    public static boolean isColideToRightBlock() {
-        return colideToRightBlock;
+    public  boolean isColideToRightBlock() {
+        return this.colideToRightBlock;
     }
 
-    public static void setColideToRightBlock(boolean colideToRightBlock) {
-        Ball.colideToRightBlock = colideToRightBlock;
+    public void setColideToRightBlock(boolean colideToRightBlock) {
+        this.colideToRightBlock = colideToRightBlock;
     }
 
-    public static boolean isColideToBottomBlock() {
-        return colideToBottomBlock;
+    public boolean isColideToBottomBlock() {
+        return this.colideToBottomBlock;
     }
 
-    public static void setColideToBottomBlock(boolean colideToBottomBlock) {
-        Ball.colideToBottomBlock = colideToBottomBlock;
+    public void setColideToBottomBlock(boolean colideToBottomBlock) {
+        this.colideToBottomBlock = colideToBottomBlock;
     }
 
-    public static boolean isColideToLeftBlock() {
-        return colideToLeftBlock;
+    public boolean isColideToLeftBlock() {
+        return this.colideToLeftBlock;
     }
 
-    public static void setColideToLeftBlock(boolean colideToLeftBlock) {
-        Ball.colideToLeftBlock = colideToLeftBlock;
+    public void setColideToLeftBlock(boolean colideToLeftBlock) {
+        this.colideToLeftBlock = colideToLeftBlock;
     }
 
-    public static boolean isColideToTopBlock() {
-        return colideToTopBlock;
+    public boolean isColideToTopBlock() {
+        return this.colideToTopBlock;
     }
 
-    public static void setColideToTopBlock(boolean colideToTopBlock) {
-        Ball.colideToTopBlock = colideToTopBlock;
+    public void setColideToTopBlock(boolean colideToTopBlock) {
+        this.colideToTopBlock = colideToTopBlock;
     }
 
-    private static boolean colideToRightBlock = false;
-    private static boolean colideToBottomBlock = false;
-    private static boolean colideToLeftBlock = false;
-    private static boolean colideToTopBlock = false;
-
-    private double xBreak, yBreak;
-    private int breakWidth;
-    private int sceneWidth, sceneHeight;
-    private double centerBreakX;
-    private boolean isGoldStatus;
+    private  boolean colideToRightBlock = false;
+    private boolean colideToBottomBlock = false;
+    private boolean colideToLeftBlock = false;
+    private boolean colideToTopBlock = false;
     private int level;
     private boolean hitSceneBottom = false;
-
-    private Main main; // Reference to Main class
 
     // Updated constructor
     public Ball( double radius, double initialX, double initialY) {
@@ -91,17 +80,17 @@ public class Ball extends Circle {
     }
 
     public void setPhysicsToBall() {
-        model = new Model();
+        Model model = new Model();
 
         // Use variables from Main class
         this.vX = 3;
         this.vY = 3;
-        this.xBreak = Break.getxBreak();
-        this.yBreak = Break.getyBreak();
-        this.breakWidth = Main.breakWidth;
-        this.centerBreakX = Break.getCenterBreakx();
-        this.sceneWidth = Main.sceneWidth;
-        this.sceneHeight = Main.sceneHeigt;
+        double xBreak = Break.getxBreak();
+        double yBreak = Break.getyBreak();
+        int breakWidth = Controller.breakWidth;
+        double centerBreakX = Break.getCenterBreakx();
+        int sceneWidth = Controller.sceneWidth;
+        int sceneHeight = Controller.sceneHeigt;
         this.level = model.getLevel();
 
         if (goDownBall) {
@@ -118,10 +107,10 @@ public class Ball extends Circle {
 
         // Collision with top or bottom of the scene
         if (this.getCenterY() <= 0) {
-            goDownBall = true;
+            this.goDownBall = true;
             resetColideFlags();
         } else if (this.getCenterY() >= sceneHeight - ballRadius * 2) {
-            goDownBall = false;
+            this.goDownBall = false;
             hitSceneBottom = true;
             resetColideFlags();
             // Additional logic for handling when the ball hits the bottom
@@ -133,11 +122,11 @@ public class Ball extends Circle {
                 this.getCenterX() <= xBreak + breakWidth) {
 
             resetColideFlags();
-            goDownBall = false;
+            this.goDownBall = false;
 
             boolean hitLeftSide = this.getCenterX() < (xBreak + breakWidth / 2.0);
-            if ((goRightBall && hitLeftSide) || (!goRightBall && !hitLeftSide)) {
-                goRightBall = !goRightBall;
+            if ((this.goRightBall && hitLeftSide) || (!this.goRightBall && !hitLeftSide)) {
+                this.goRightBall = !goRightBall;
             }
 
             // Calculate the new horizontal velocity based on the collision
@@ -147,10 +136,10 @@ public class Ball extends Circle {
 
         // Collision with left or right walls of the scene
         if (this.getCenterX() <= 0) {
-            goRightBall = true;
+            this.goRightBall = true;
             resetColideFlags();
         } else if (this.getCenterX() >= sceneWidth) {
-            goRightBall = false;
+            this.goRightBall = false;
             resetColideFlags();
         }
 
@@ -158,22 +147,22 @@ public class Ball extends Circle {
 
         if (colideToRightBlock) {
 
-            goRightBall = false;
+            this.goRightBall = false;
         }
 
         if (colideToLeftBlock) {
 
-            goRightBall = true;
+            this.goRightBall = true;
         }
 
         if (colideToTopBlock) {
 
-            goDownBall = false;
+            this.goDownBall = false;
         }
 
         if (colideToBottomBlock) {
 
-            goDownBall = true;
+            this.goDownBall = true;
         }
 
         }
@@ -185,16 +174,16 @@ public class Ball extends Circle {
         // Collision logic based on hitCode
         switch (hitCode) {
             case Block.HIT_RIGHT:
-                colideToRightBlock = true;
+                this.colideToRightBlock = true;
                 break;
             case Block.HIT_BOTTOM:
-                colideToBottomBlock = true;
+                this.colideToBottomBlock = true;
                 break;
             case Block.HIT_LEFT:
-                colideToLeftBlock = true;
+                this.colideToLeftBlock = true;
                 break;
             case Block.HIT_TOP:
-                colideToTopBlock = true;
+                this.colideToTopBlock = true;
                 break;
         }
 
@@ -212,15 +201,17 @@ public class Ball extends Circle {
     }
 
     public  void resetColideFlags() {
-        colideToRightBlock = false;
-        colideToBottomBlock = false;
-        colideToLeftBlock = false;
-        colideToTopBlock = false;
+        this.colideToRightBlock = false;
+        this.colideToBottomBlock = false;
+        this.colideToLeftBlock = false;
+        this.colideToTopBlock = false;
     }
 
     public double getBallX() {
         return this.getCenterX();
     }
+
+
 
     public double getBallY() {
         return this.getCenterY();

@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
 
+import static brickGame.Controller.*;
 import static brickGame.Main.*;
 
 public class View {
@@ -18,7 +19,7 @@ public class View {
     private Button load, newGame;
     private Scene scene;
     private int score, heart, level;
-    private ExhaustTail exhaustTail;
+    private final ExhaustTail exhaustTail;
 
 
 
@@ -56,7 +57,7 @@ public class View {
 
         // Add elements to root pane
         root = new Pane();
-        if (loadFromSave == false) {
+        if (!loadFromSave) {
             root.getChildren().addAll((Node) rect, ball, scoreLabel, heartLabel, levelLabel, pauseLabel ,newGame, load ,penaltyLabel);
 
         } else {
@@ -115,9 +116,6 @@ public class View {
     public void addToRoot(Node node) {
         Platform.runLater(() -> root.getChildren().add(node));
     }
-    public void removeFromRoot(Node node) {
-        Platform.runLater(() -> root.getChildren().remove(node));
-    }
     public void removeStyleClassFromRoot(String styleClass) {
         Platform.runLater(() -> root.getStyleClass().remove(styleClass));
     }
@@ -145,26 +143,14 @@ public class View {
     public void updatePenaltyTime(int i) {
         penaltyLabel.setText("Penalty: " + i + " seconds");
     }
-
-    // Methods to control visibility of labels
-    public void setScoreVisibility(boolean visible) {
-        scoreLabel.setVisible(visible);
+    public void removeAllElementsFromRoot() {
+        Platform.runLater(() -> {
+            root.getChildren().clear(); // Remove all children nodes
+            root.getStyleClass().clear(); // Clear all style classes
+        });
     }
 
-    public void setHeartVisibility(boolean visible) {
-        heartLabel.setVisible(visible);
-    }
 
-    public void setLevelVisibility(boolean visible) {
-        levelLabel.setVisible(visible);
-    }
-
-    public void setPauseVisibility(boolean visible) {
-        pauseLabel.setVisible(visible);
-    }
-    public void setOnKeyPressed(EventHandler<KeyEvent> handler) {
-        scene.setOnKeyPressed(handler);
-    }
 
 
 }
