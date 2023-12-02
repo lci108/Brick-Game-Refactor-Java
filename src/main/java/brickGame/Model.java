@@ -85,7 +85,6 @@ public class Model {
 
     private static final int SPOOKY_CHANCE = 180;
     public CopyOnWriteArrayList<Block> setUpBoard(){
-
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1

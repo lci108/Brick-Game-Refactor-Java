@@ -65,7 +65,7 @@ public class Ball extends Circle {
     private boolean colideToBottomBlock = false;
     private boolean colideToLeftBlock = false;
     private boolean colideToTopBlock = false;
-    private int level;
+
     private boolean hitSceneBottom = false;
 
     // Updated constructor
@@ -81,6 +81,7 @@ public class Ball extends Circle {
 
     public void setPhysicsToBall() {
         Model model = new Model();
+        Controller controller = new Controller();
 
         // Use variables from Main class
         this.vX = 3;
@@ -91,7 +92,6 @@ public class Ball extends Circle {
         double centerBreakX = Break.getCenterBreakx();
         int sceneWidth = Controller.sceneWidth;
         int sceneHeight = Controller.sceneHeigt;
-        this.level = model.getLevel();
 
         if (goDownBall) {
             this.setCenterY(this.getCenterY() + vY);
@@ -194,9 +194,9 @@ public class Ball extends Circle {
         if (Math.abs(relation) <= 0.3) {
             return Math.abs(relation);
         } else if (Math.abs(relation) > 0.3 && Math.abs(relation) <= 0.7) {
-            return (Math.abs(relation) * 1.5) + (level / 3.5);
+            return (Math.abs(relation) * 1.5);
         } else {
-            return (Math.abs(relation) * 2) + (level / 3.5);
+            return (Math.abs(relation) * 2) ;
         }
     }
 
