@@ -64,6 +64,8 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     private View view;
     Model model = new Model();
 
+
+
     @Override
     //here is entry point
     public void start(Stage primaryStage) throws Exception {
@@ -77,7 +79,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
             if (model.getLevel() > 1) {
                 new Score().showMessage("Level Up :)", view);
             }
-            if (model.getLevel() == 2) {
+            if (model.getLevel() == 9) {
                 Soundeffects.playWin();
                 new Score().showWin(view);
                 return;
@@ -572,3 +574,4 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     }
 
 }
+

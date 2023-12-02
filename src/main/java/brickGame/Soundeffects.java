@@ -86,11 +86,4 @@ public class Soundeffects {
     public void playGameOver(){playSound(gameOverPlayer);}
 
 
-
-    private void disposePlayer(MediaPlayer player) {
-        if (player != null) {
-            player.stop();
-            player.dispose();
-        }
-    }
 }
