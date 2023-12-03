@@ -1,6 +1,7 @@
 package brickGame;
 
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -74,6 +75,10 @@ public class Model {
 
     private boolean isExistHeartBlock = false;
 
+    public CopyOnWriteArrayList<Block> getBlocks() {
+        return blocks;
+    }
+
     private final CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
 
     // Constants
@@ -84,7 +89,7 @@ public class Model {
     private static final int MYSTERY_CHANCE = 170;
 
     private static final int SPOOKY_CHANCE = 180;
-    public CopyOnWriteArrayList<Block> setUpBoard(){
+    public void setUpBoard(){
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1
@@ -186,7 +191,6 @@ public class Model {
             default:
                 break;
         }
-        return blocks;
     }
     private int determineBlockType(int randomChance) {
         if (randomChance < CHOCO_CHANCE) {
@@ -211,6 +215,20 @@ public class Model {
         else{
             return false;
         }
+    }
+
+    public void clearBlocks(){
+        blocks.clear();
+    }
+
+    public void repopulateBlocks(ArrayList<BlockSerializable> blocks){
+        for (BlockSerializable ser : blocks) {
+            this.blocks.add(new Block(ser.row, ser.j, ser.type));
+        }
+    }
+
+    public void addBlocks(Block newBlock){
+        blocks.add(newBlock);
     }
 
 

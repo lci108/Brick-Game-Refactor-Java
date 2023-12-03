@@ -49,7 +49,6 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     public static String savePathDir = "D:/save/";
 
 
-    public static CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<Bonus> chocos = new CopyOnWriteArrayList<>();
 
     private final CopyOnWriteArrayList<Bonus> mysteries = new CopyOnWriteArrayList<>();
@@ -90,7 +89,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
             initBoard();
 
         }
-        view = new View(loadFromSave , ball , rect, model.getLevel() , exhaustTail);
+        view = new View(loadFromSave , ball , rect, model.getLevel() , exhaustTail , model.getBlocks());
 
         //go to handle method
         view.getScene().setOnKeyPressed(this);
@@ -144,7 +143,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     }
 
     private void initBoard() {
-        blocks = model.setUpBoard();
+        model.setUpBoard();
     }
 
 
@@ -271,7 +270,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                     outputStream.writeBoolean(ball.isColideToTopBlock());
 
                     ArrayList<BlockSerializable> blockSerializables = new ArrayList<BlockSerializable>();
-                    for (Block block : blocks) {
+                    for (Block block : model.getBlocks()) {
                         if (block.isDestroyed) {
                             continue;
                         }
@@ -324,13 +323,14 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
         time = loadSave.time;
         goldTime = loadSave.goldTime;
         //Clearing Existing Blocks and chocos and mysteries:
-        blocks.clear();
+        model.clearBlocks();
         chocos.clear();
         mysteries.clear();
         //Repopulating the blocks from the Loaded Data:
-        for (BlockSerializable ser : loadSave.blocks) {
-            blocks.add(new Block(ser.row, ser.j, ser.type));
-        }
+        model.repopulateBlocks(loadSave.blocks);
+//        for (BlockSerializable ser : loadSave.blocks) {
+//            blocks.add(new Block(ser.row, ser.j, ser.type));
+//        }
 
 
         try {
@@ -365,7 +365,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                     goldTime = 0;
 
                     engine.stop();
-                    blocks.clear();
+                    model.clearBlocks();
                     chocos.clear();
                     mysteries.clear();
                     model.setDestroyedBlockCount(0);
@@ -393,7 +393,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
             time = 0;
             goldTime = 0;
 
-            blocks.clear();
+            model.clearBlocks();
             chocos.clear();
             mysteries.clear();
 
@@ -432,7 +432,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
 
         //if smtg collide with ball
         if (ball.getBallY() >= Block.getPaddingTop() && ball.getBallY() <= (Block.getHeight() * (10)) + Block.getPaddingTop()) {
-            for (final Block block : blocks) {
+            for (final Block block : model.getBlocks()) {
                 int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
                 if (hitCode != Block.NO_HIT) {
                     Soundeffects.playBlockHit();
@@ -441,7 +441,8 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                     if(block.type == BLOCK_SPOOKY){
                         Block newBlock = new Block(new Random().nextInt(10), new Random().nextInt(5), Block.BLOCK_SPOOKED);
                         Soundeffects.playSpooky();
-                        blocks.add(newBlock);
+                        model.addBlocks(newBlock);
+//                        blocks.add(newBlock);
                         view.addBlockToRoot(newBlock);
                     }
                     block.rect.setVisible(false);
