@@ -1,17 +1,16 @@
 package brickGame;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import static brickGame.Controller.*;
-import static brickGame.Main.*;
 
 public class View {
     private Pane root;
@@ -23,13 +22,13 @@ public class View {
 
 
 
-    public View(boolean loadFromSave, Ball ball, Break rect,int level ,ExhaustTail exhaustTail) {
+    public View(boolean loadFromSave, Ball ball, Break rect, int level , ExhaustTail exhaustTail, CopyOnWriteArrayList<Block> blocks) {
         this.exhaustTail = exhaustTail;
-        initUI(loadFromSave , ball , rect );
+        initUI(loadFromSave , ball , rect , blocks);
         updateLevel(level);
     }
 
-    public void initUI(boolean loadFromSave, Ball ball, Break rect ) {
+    public void initUI(boolean loadFromSave, Ball ball, Break rect, CopyOnWriteArrayList<Block> blocks) {
         penaltyLabel = new Label("PENALTY TIME");
         penaltyLabel.setTranslateX(200); // Set X position
         penaltyLabel.setTranslateY(300);
