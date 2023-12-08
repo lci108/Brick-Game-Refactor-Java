@@ -59,8 +59,11 @@ I've added two new blocks to spice up the gameplay:
 - **Spooky Block**: Initially adorned with pumpkins hanging below, the Spooky Block transforms into a regular Spooked Block after being hit once. Spooked Blocks spawn randomly on the screen and are destroyed upon impact.
 
 - **Mystery Block**: Striking this block triggers the drop of a Mystery Bonus. Upon collision with the paddle, players have a 50% chance to gain +5 score or freeze the paddle for 3 seconds. A countdown penalty label warns players during the freeze.
+- To enhance maintainability, developers can easily configure the chances for each block, adding a layer of customization to increase the fun factor.
 
-To enhance maintainability, developers can easily configure the chances for each block, adding a layer of customization to increase the fun factor.
+
+- **Moving Impenetrable Block**: A new block, the impenetrable block, is introduced. This block only spawns during the last level and exhibits movement behavior.The impenetrable block is implemented with the ability to move horizontally. It enhances the challenge in the final level, requiring players to adapt to the dynamic behavior of this special block.
+
 
 **2)New Blocks Layout**: The revamped logic for 8 custom layout levels ensures a challenging and strategic progression through the game.
 - I've revamped the game's logic, introducing 8 levels with custom layouts. Each level presents a unique challenge, offering a more engaging and strategic gaming experience. The speed of the ball dynamically changes across levels, ensuring a progressively challenging adventure.
@@ -88,20 +91,16 @@ Immerse yourself in the game with a range of new sound effects:
 
 The following features have been implemented but are not working correctly. Steps have been taken to address the issues:
 
-**1) Thread to Timeline Conversion**
-- **Issue**: `nextLevel()` is running twice when all the blocks are destroyed.
-- **Solution**: Flags have been added to ensure that `nextLevel()` runs only once in one update.
-- **Explanation**: In the original implementation, the game used traditional `Thread` for handling animation and updates. However, this approach led to synchronization issues.The game engine's animation and update mechanism was refactored to use `Timeline` instead of `Thread`. The transition to `Timeline` provides a more synchronized and event-driven approach to managing game updates.However the `nextLevel()` method is being executed twice in a single update causing it to skip levels level1 -> level3 -> level5... after changing to `Timeline` , and I cant seem find the reason causing it.So I introduced flags ensuring that the 'nextLevel()` method is executed only once per update cycle.
-
-Although shift to `Timeline` resolved the specific issue and also offers better control over the game's animation and update cycle, enhancing the overall stability and responsiveness of the game.
-But I hard coded to solve the issue, by introducing flags to make sure the method only run once in an update without solving the real issue of why its running twice and might cause a harder maintainbility of the game in the future.
-
-**2) Ball Penetrating Multiple Blocks**
+**1) Ball Penetrating Multiple Blocks (rarely)**
 - **Issue**: The ball penetrates multiple blocks when hitting from certain angles without deflecting.
-- **Solution**: Revamped `checkHitToBlock()` logic and introduced a new variable `ballRadius`. Modified ball physics in `setPhysicsToBall()` to deflect the ball only within a certain angle, reducing the likelihood of penetrating multiple blocks due to collisions with a large angle.
+- **Solution atemmpted**: Revamped `checkHitToBlock()` logic and introduced a new variable `ballRadius`. Modified ball physics in `setPhysicsToBall()` to deflect the ball only within a certain angle, reducing the likelihood of penetrating multiple blocks due to collisions with a large angle.
 - **Explanation**: The initial issue stemmed from the ball penetrating multiple blocks under specific collision conditions. The traditional collision detection logic (`checkHitToBlock()`) and ball physics (`setPhysicsToBall()`) were not robust enough to handle certain angles of impact. The `checkHitToBlock()` logic was revamped to provide more accurate and reliable collision checks. Additionally, a new variable, `ballRadius`, was introduced to better define the ball's size and improve collision accuracy. Furthermore, modifications were made to the ball physics when colliding with break in the `setPhysicsToBall()` method. These changes ensured that the ball deflects only within a specific angle range, minimizing the chances of it penetrating multiple blocks when colliding at a large angle.
 
 Although these modifications did reduce the likelihood of the ball to penetrate multiple blocks , but sometimes it will still occur. Besides that , I changed the physics of collision between ball and break to make sure the ball doesnt deflect to an angle which is too steep that will cause penetration of multiple blocks, this changed the original game physics just to reduce the bugs.
+
+### 2) Moving Impenetrable Block Collision
+- **Issue:** The `checkHitToBlock()` method has inconsistent return values, causing the ball to deflect incorrectly when hitting the bottom of a moving impenetrable block.
+  - **Explanation:** The collision problem specifically occurs with the moving impenetrable block. It is hypothesized that the issue is related to the block's movement and the returning of previous `x` and `y` coordinates, leading to a lack of synchronization in collision detection.
 
 
 ## Features Not Implemented
@@ -211,6 +210,9 @@ Methods related specifically to the behavior and properties of the break were mo
 
 - **`public boolean allBlocksDestroyed()`:**
   - Checks if all blocks on the game board have been destroyed.
+ 
+- **`public void moveImpenetrableBlock()`:**
+  - move the impenetrable blocks that is spawned in the last level  
 #### Other Methods 
 - getters and setters
 
@@ -333,13 +335,35 @@ The `GameEngine` class underwent a modification in its implementation by replaci
   - Modified the `checkHitToBlock` method for improved collision detection.
   - Replaced the initial collision detection logic with a more generalized and accurate approach for handling collisions on all sides of the block.
   - The updated logic checks for overlap in both X and Y directions, calculating the depth of overlap in each direction and determining the side of collision based on the minimum overlap.
+- **Introduction to different blocks:**
+  1. **Mystery Block:**
+   - The Mystery Block introduces an element of unpredictability to the game.
+   - Hitting this block triggers the release of a Mystery Bonus, offering players a chance to gain extra points or activate special effects.
+
+2. **Spooky Block:**
+   - Adorned with spooky decorations, this block adds a Halloween-themed twist.
+   - The Spooky Block transforms into a Spooked Block after being hit, creating dynamic challenges for the player.
+
+3. **Impenetrable Block:**
+   - Introduced in the last level, the Impenetrable Block poses a significant challenge.
+   - This block is impenetrable and requires strategic gameplay to overcome.
+ 
+    
 
 #### Explanation
-The `Block` class underwent a modification in the `checkHitToBlock` method to enhance the accuracy and generality of collision detection. The original method, which relied on specific conditions for each side of the block, was replaced with a more systematic approach. The revised logic now considers overlapping in both X and Y directions, determining the depth of overlap in each direction. By comparing these overlaps, the method accurately identifies the side of the block where the collision occurred. This modification improves the robustness and reliability of collision detection in the game, ensuring a more consistent and realistic gameplay experience.
+The `Block` class underwent a modification in the `checkHitToBlock` method to enhance the accuracy and generality of collision detection. The original method, which relied on specific conditions for each side of the block, was replaced with a more systematic approach. The revised logic now considers overlapping in both X and Y directions, determining the depth of overlap in each direction. By comparing these overlaps, the method accurately identifies the side of the block where the collision occurred. This modification improves the robustness and reliability of collision detection in the game, ensuring a more consistent and realistic gameplay experience.Besides that , the introduction to new blocks contribute to a rich gaming experience, requiring players to employ different strategies and skills as they progress through the levels.
+
+### 8) Block Serializable
+
+#### Changes Made
+- **Added a new parametre to save 'direction':**
+
+#### Explanation
+In order to implement the impenetrable blocks that are moving in different left right directions concurrently , a direction variable is introduced.
+
 
 
 ## Unexpected Problems Encountered 
-- (As mentioned in the  Implemented but not working properly)
 
 ### 1. Double Execution of `nextLevel()`
 
@@ -349,9 +373,12 @@ The `Block` class underwent a modification in the `checkHitToBlock` method to en
 
 ### 2. Ball Penetrating Multiple Blocks
 
-**Issue:** The ball occasionally penetrated multiple blocks when hitting from certain angles, even after modifying the collision detection logic.
+**Issue:** The ball penetrated multiple blocks when hitting from certain angles, even after modifying the collision detection logic.
 
 **Solution:** The `checkHitToBlock()` logic was revamped to provide more accurate collision checks. Additionally, a new variable, `ballRadius`, was introduced to define the ball's size more precisely. However, occasional penetration may still occur, revealing the complexity of handling collisions at steep angles.
 
 Addressing these challenges involved a combination of code modifications, introducing flags, and enhancing collision detection logic. While these solutions alleviate the immediate issues, they also highlight areas for potential future refinement and optimization. Ongoing efforts will be directed towards a more thorough understanding of the root causes behind these unexpected behaviors.
+### 3. Moving Impenetrable Block Collision
+- **Issue:** The `checkHitToBlock()` method has inconsistent return values, causing the ball to deflect incorrectly when hitting the bottom of a moving impenetrable block.
+  - **No solution yet** The collision problem specifically occurs with the moving impenetrable block. It is hypothesized that the issue is related to the block's movement and the returning of previous `x` and `y` coordinates, leading to a lack of synchronization in collision detection.
 
