@@ -95,7 +95,6 @@ public class Model {
 
     private static final int SPOOKY_CHANCE = 180;
     public void setUpBoard(){
-        level=8;
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1
