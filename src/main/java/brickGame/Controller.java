@@ -452,7 +452,6 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                         model.incDestroyedBlockCount();
 
                     }else{
-                        System.out.println(hitCode);
                         //just play blockhitSound when hit
                         Soundeffects.playBlockHit();
                     }
