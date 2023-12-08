@@ -274,7 +274,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                         if (block.isDestroyed) {
                             continue;
                         }
-                        blockSerializables.add(new BlockSerializable(block.row, block.column, block.type));
+                        blockSerializables.add(new BlockSerializable(block.row, block.column, block.type , block.direction));
                     }
 
                     outputStream.writeObject(blockSerializables);
@@ -382,7 +382,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
 
         try {
             model.setLevel(0);
-            model.setHeart(5);
+            model.setHeart(3);
             model.setScore(0);
             model.setDestroyedBlockCount(0);
             ball.resetColideFlags();
@@ -420,6 +420,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
                 ball.setCenterX(ball.getBallX());
                 ball.setCenterY(ball.getBallY());
                 view.updateExhaustTail();
+                model.moveImpenetrableBlock();
 
                 for (Bonus choco : chocos) {
                     choco.block.setY(choco.y);
@@ -435,19 +436,27 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
             for (final Block block : model.getBlocks()) {
                 int hitCode = block.checkHitToBlock(ball.getBallX(), ball.getBallY());
                 if (hitCode != Block.NO_HIT) {
-                    Soundeffects.playBlockHit();
-                    model.incScore();
-                    new Score().show(block.x, block.y, 1, view);
-                    if(block.type == BLOCK_SPOOKY){
-                        Block newBlock = new Block(new Random().nextInt(10), new Random().nextInt(5), Block.BLOCK_SPOOKED);
-                        Soundeffects.playSpooky();
-                        model.addBlocks(newBlock);
+                    if(block.type != BLOCK_IMPENETRABLE){
+                        Soundeffects.playBlockHit();
+                        model.incScore();
+                        new Score().show(block.x, block.y, 1, view);
+                        if(block.type == BLOCK_SPOOKY){
+                            Block newBlock = new Block(new Random().nextInt(10), new Random().nextInt(5), Block.BLOCK_SPOOKED, 0);
+                            Soundeffects.playSpooky();
+                            model.addBlocks(newBlock);
 //                        blocks.add(newBlock);
-                        view.addBlockToRoot(newBlock);
+                            view.addBlockToRoot(newBlock);
+                        }
+                        block.rect.setVisible(false);
+                        block.isDestroyed = true;
+                        model.incDestroyedBlockCount();
+
+                    }else{
+                        System.out.println(hitCode);
+                        //just play blockhitSound when hit
+                        Soundeffects.playBlockHit();
                     }
-                    block.rect.setVisible(false);
-                    block.isDestroyed = true;
-                    model.incDestroyedBlockCount();
+
 
 
                     ball.resetColideFlags();
@@ -575,4 +584,3 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     }
 
 }
-

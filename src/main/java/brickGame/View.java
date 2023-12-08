@@ -1,12 +1,15 @@
 package brickGame;
 
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
+import javafx.util.Duration;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,6 +22,10 @@ public class View {
     private Scene scene;
     private int score, heart, level;
     private final ExhaustTail exhaustTail;
+    private ImageView heartImageView;
+    private ScaleTransition pulseAnimation;
+
+
 
 
 
@@ -26,6 +33,17 @@ public class View {
         this.exhaustTail = exhaustTail;
         initUI(loadFromSave , ball , rect , blocks);
         updateLevel(level);
+        initializePulseAnimation();
+
+    }
+    private void initializePulseAnimation() {
+        pulseAnimation = new ScaleTransition(Duration.millis(500), heartImageView);
+        pulseAnimation.setFromX(1.0);
+        pulseAnimation.setFromY(1.0);
+        pulseAnimation.setToX(1.2);
+        pulseAnimation.setToY(1.2);
+        pulseAnimation.setAutoReverse(true);
+        pulseAnimation.setCycleCount(ScaleTransition.INDEFINITE);
     }
 
     public void initUI(boolean loadFromSave, Ball ball, Break rect, CopyOnWriteArrayList<Block> blocks) {
@@ -51,16 +69,18 @@ public class View {
         scoreLabel = new Label("Score: " + score);
         levelLabel = new Label("Level: " + level);
         levelLabel.setTranslateY(20);
-        heartLabel = new Label("Heart : " + heart);
-        heartLabel.setTranslateX(sceneWidth  - 70);
+
+
+//        heartLabel = new Label("Heart : " + heart);
+//        heartLabel.setTranslateX(sceneWidth  - 70);
 
         // Add elements to root pane
         root = new Pane();
         if (!loadFromSave) {
-            root.getChildren().addAll((Node) rect, ball, scoreLabel, heartLabel, levelLabel, pauseLabel ,newGame, load ,penaltyLabel);
+            root.getChildren().addAll((Node) rect, ball, scoreLabel, levelLabel, pauseLabel ,newGame, load ,penaltyLabel);
 
         } else {
-            root.getChildren().addAll(rect, ball, scoreLabel, heartLabel, levelLabel , pauseLabel, penaltyLabel);
+            root.getChildren().addAll(rect, ball, scoreLabel, levelLabel , pauseLabel, penaltyLabel );
 
         }
         for (Block block : blocks) {
@@ -69,6 +89,18 @@ public class View {
         for (ImageView particle : exhaustTail.getParticles()) {
             root.getChildren().add(particle);
         }
+        Image heart3Image = new Image("heart3.png");
+
+        // Set initial heart image
+        heartImageView = new ImageView(heart3Image);
+        heartImageView.setFitWidth(80);
+        heartImageView.setFitHeight(30);
+        heartImageView.setTranslateX(sceneWidth - 95);
+        heartImageView.setTranslateY(sceneHeigt - 690);
+
+
+
+        root.getChildren().add(heartImageView);
         scene = new Scene(root, sceneWidth , sceneHeigt );
         scene.getStylesheets().add("style.css");
     }
@@ -133,7 +165,23 @@ public class View {
     }
 
     public void updateHeart(int heart) {
-        heartLabel.setText("Heart: " + heart);
+        switch (heart) {
+            case 3:
+                heartImageView.setImage(new Image("heart3.png"));
+                break;
+            case 2:
+                heartImageView.setImage(new Image("heart2.png"));
+                break;
+            case 1:
+                heartImageView.setImage(new Image("heart1.png"));
+                pulseAnimation.play();
+
+                break;
+            default:
+                // Handle other cases or provide a default image
+                break;
+        }
+
     }
 
     public void updateLevel(int level) {

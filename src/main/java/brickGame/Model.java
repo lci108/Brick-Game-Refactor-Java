@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static brickGame.Controller.sceneWidth;
+
 
 public class Model {
     public int getLevel() {
@@ -29,13 +31,16 @@ public class Model {
         this.heart = heart;
     }
     public void incHeart(){
-        this.heart++;
+        if( heart < 4){
+            this.heart++;
+
+        }
     }
     public void decHeart(){
         this.heart--;
     }
 
-    private int heart = 5;
+    private int heart = 3;
 
     public int getScore() {
         return score;
@@ -90,12 +95,13 @@ public class Model {
 
     private static final int SPOOKY_CHANCE = 180;
     public void setUpBoard(){
+        level=8;
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1
                 for (int i = 0; i < 5; i++) {
                     int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                    blocks.add(new Block(0, i, type));
+                    blocks.add(new Block(0, i, type , 0));
                 }
                 break;
 
@@ -103,7 +109,7 @@ public class Model {
                 for (int row = 0; row < 10; row++) {
                     for (int col = 0; col < 5; col += 2) {
                         int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                        blocks.add(new Block(row, col,type));
+                        blocks.add(new Block(row, col,type , 0));
                     }
                 }
                 break;
@@ -113,7 +119,7 @@ public class Model {
                     for (int j = 0; j < 5; j++) {
                         if ((i + j) % 2 == 0) {
                             int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(i, j, type));
+                            blocks.add(new Block(i, j, type, 0));
                         }
                     }
                 }
@@ -125,7 +131,7 @@ public class Model {
                         // Place blocks in positions forming an 'X'
                         if (i == j || i + j == 4) { // Diagonal from top-left to bottom-right and top-right to bottom-left
                             int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(i, j, type));
+                            blocks.add(new Block(i, j, type, 0));
                         }
                     }
                 }
@@ -136,7 +142,7 @@ public class Model {
                         // Add blocks only on the edges, leave the inside hollow
                         if (row == 0 || row == 6 || col == 0 || col == 6) {
                             int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, type));
+                            blocks.add(new Block(row, col, type, 0));
                         }
                     }
                 }
@@ -148,7 +154,7 @@ public class Model {
                         if ((row % 10 < 5 && row % 5 == col) || // Zig (moving right)
                                 (row % 10 >= 5 && 4 - (row % 5) == col)) { // Zag (moving left)
                             int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, type));
+                            blocks.add(new Block(row, col, type,0));
                         }
                     }
                 }
@@ -167,7 +173,7 @@ public class Model {
                     int row = position[0];
                     int col = position[1];
                     int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                    blocks.add(new Block(row, col, type));
+                    blocks.add(new Block(row, col, type,0));
                 }
 
                 break;
@@ -181,10 +187,15 @@ public class Model {
                                 (row == 2 && ((col == 0 && row < 4) || (col == 4 && row < 4))) || // Left and right sides of 'A'
                                 (row >= 4 && (col == 0 || col == 4))) { // Stem of 'A'
                             int type = determineBlockType(new Random().nextInt(CHANCE_DIVISOR));
-                            blocks.add(new Block(row, col, type));
+                            blocks.add(new Block(row, col, type,0));
                         }
                     }
                 }
+                //add 2 impenetrable
+                blocks.add(new Block(9, 0, Block.BLOCK_IMPENETRABLE , 1));
+                blocks.add(new Block(10, 4, Block.BLOCK_IMPENETRABLE ,-1));
+
+
 
                 break;
 
@@ -209,13 +220,18 @@ public class Model {
         }
     }
     public boolean allBlocksDestroyed() {
+        if(level == 8){
+            if(destroyedBlockCount == blocks.size() - 2) {
+                return true;
+            }
+        }
         if(destroyedBlockCount == blocks.size()) {
             return true;
         }
-        else{
+
             return false;
-        }
-    }
+
+       }
 
     public void clearBlocks(){
         blocks.clear();
@@ -223,12 +239,33 @@ public class Model {
 
     public void repopulateBlocks(ArrayList<BlockSerializable> blocks){
         for (BlockSerializable ser : blocks) {
-            this.blocks.add(new Block(ser.row, ser.j, ser.type));
+            this.blocks.add(new Block(ser.row, ser.j, ser.type, ser.direction));
         }
     }
 
     public void addBlocks(Block newBlock){
         blocks.add(newBlock);
+    }
+
+    public void moveImpenetrableBlock() {
+        if(level == 8){
+            for (Block block : blocks) {
+                if (block.type  == Block.BLOCK_IMPENETRABLE) {
+                    // Update x coordinate based on the direction
+                    block.setX(block.getX() + block.getDirection());
+
+                    // Check if the block reaches the rightmost or leftmost position
+                    if (block.getX() >= sceneWidth - Block.getWidth() || block.getX() <= 0) {
+                        // Change direction to move in the opposite direction
+                        block.setDirection(-block.getDirection());
+                    }
+
+                    // Update the x coordinate of the block's rectangle
+                    block.getRect().setX(block.getX());
+                }
+            }
+
+        }
     }
 
 

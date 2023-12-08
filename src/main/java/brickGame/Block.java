@@ -12,7 +12,17 @@ import java.util.Random;
 import static brickGame.Ball.ballRadius;
 
 public class Block implements Serializable {
-    private static final Block block = new Block(-1, -1,99);
+    private static final Block block = new Block(-1, -1,99 ,0);
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public int direction;
 
     public int row;
     public int column;
@@ -22,6 +32,22 @@ public class Block implements Serializable {
 
     public int type;
 
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     public int x;
     public int y;
 
@@ -29,6 +55,11 @@ public class Block implements Serializable {
     private final int height = 30;
     private final int paddingTop = height * 2;
     private final int paddingH = 40;
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
     public Rectangle rect;
 
 
@@ -49,11 +80,14 @@ public class Block implements Serializable {
 
     public static final int BLOCK_SPOOKED = 105;
 
+    public static final int BLOCK_IMPENETRABLE = 106;
 
-    public Block(int row, int column, int type) {
+
+    public Block(int row, int column, int type , int direction) {
         this.row = row;
         this.column = column;
         this.type = type;
+        this.direction = direction;
         draw();
     }
 
@@ -91,6 +125,10 @@ public class Block implements Serializable {
             Image image = new Image("spooked.png");
             ImagePattern pattern = new ImagePattern(image);
             rect.setFill(pattern);
+        }else if (type == BLOCK_IMPENETRABLE) {
+                Image image = new Image("impenetrable.png"); // Replace with the actual image for the new block
+                ImagePattern pattern = new ImagePattern(image);
+                rect.setFill(pattern);
         }else{
             String imagePath = "block" + (new Random().nextInt(8)+1) + ".png"; // type + 1 to match your image naming
             Image image = new Image(imagePath);
@@ -98,6 +136,8 @@ public class Block implements Serializable {
             rect.setFill(pattern);        }
 
     }
+
+
 
 
 
