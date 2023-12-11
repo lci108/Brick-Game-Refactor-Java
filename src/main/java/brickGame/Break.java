@@ -7,8 +7,12 @@ import javafx.scene.shape.Rectangle;
 import static brickGame.Controller.*;
 import static brickGame.Main.*;
 
-
+/**
+ * The Break class represents the paddle in the brick game.
+ * It extends Rectangle and includes methods for moving the paddle.
+ */
 public class Break extends Rectangle {
+
 
     public static double getxBreak() {
         return xBreak;
@@ -42,11 +46,14 @@ public class Break extends Rectangle {
     private static double centerBreakx;
     private static final int halfBreakWidth = breakWidth / 2;
 
-
-
-
-
-
+    /**
+     * Constructs a Break object with the specified x-coordinate, y-coordinate, width, and height.
+     *
+     * @param x      The x-coordinate of the top-left corner of the paddle.
+     * @param y      The y-coordinate of the top-left corner of the paddle.
+     * @param width  The width of the paddle.
+     * @param height The height of the paddle.
+     */
     public Break(double x, double y, int width, int height) {
         super(width, height, new ImagePattern(new Image("block.png")));
         this.setX(x);
@@ -55,6 +62,11 @@ public class Break extends Rectangle {
         xBreak = x;
         yBreak = y;
     }
+    /**
+     * Moves the paddle in the specified direction.
+     *
+     * @param direction The direction in which to move the paddle (LEFT or RIGHT).
+     */
 
     public static void move(final int direction) {
         new Thread(new Runnable() {

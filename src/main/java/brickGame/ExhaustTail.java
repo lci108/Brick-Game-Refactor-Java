@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
+/**
+ * The ExhaustTail class represents the exhaust trail left behind by the ball.
+ * It generates and manages a list of ImageView particles that create the tail effect.
+ */
 public class ExhaustTail {
     private List<ImageView> particles;
     private Ball ball;
@@ -15,18 +18,28 @@ public class ExhaustTail {
     private Random random;
     private Image particleImage;
 
+    /**
+     * Constructs an ExhaustTail object associated with a specific ball.
+     *
+     * @param ball The ball object to which the exhaust tail is attached.
+     */
     public ExhaustTail(Ball ball) {
         this.ball = ball;
         this.particleImage = new Image("tail.png");
         particles = new ArrayList<>();
         random = new Random();
     }
-
+    /**
+     * Updates the exhaust tail by creating new particles and fading existing ones.
+     */
     public void update() {
         createParticle();
         fadeParticles();
     }
-
+    /**
+     * Generates a new particle and adds it to the list of particles if the maximum limit
+     * has not been reached. The particle's position, size, and opacity are randomly determined.
+     */
     private void createParticle() {
         if (particles.size() < maxParticles) {
             ImageView particle = new ImageView(particleImage);
@@ -40,7 +53,10 @@ public class ExhaustTail {
             particles.add(particle);
         }
     }
-
+    /**
+     * Fades existing particles by reducing their opacity. If the opacity becomes zero,
+     * the particle is removed from the list.
+     */
     private void fadeParticles() {
         Iterator<ImageView> iterator = particles.iterator();
         while (iterator.hasNext()) {
@@ -53,7 +69,11 @@ public class ExhaustTail {
             }
         }
     }
-
+    /**
+     * Gets the list of ImageView particles representing the exhaust tail.
+     *
+     * @return The list of particles in the exhaust tail.
+     */
     public List<ImageView> getParticles() {
         return particles;
     }

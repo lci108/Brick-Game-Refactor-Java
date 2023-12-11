@@ -94,8 +94,10 @@ public class Model {
     private static final int MYSTERY_CHANCE = 170;
 
     private static final int SPOOKY_CHANCE = 180;
+    /**
+     * Sets up the initial block configuration based on the current level.
+     */
     public void setUpBoard(){
-        level=8;
         switch (level) {
             case 1: //horizontal line
                 // Layout for level 1
@@ -203,6 +205,12 @@ public class Model {
                 break;
         }
     }
+    /**
+     * Determines the type of the block based on a random chance.
+     *
+     * @param randomChance The random chance value.
+     * @return The type of the block.
+     */
     private int determineBlockType(int randomChance) {
         if (randomChance < CHOCO_CHANCE) {
             return Block.BLOCK_CHOCO;
@@ -219,8 +227,14 @@ public class Model {
             return Block.BLOCK_NORMAL;
         }
     }
+    /**
+     * Checks if all blocks are destroyed, considering a special case for the last level.
+     *
+     * @return True if all blocks are destroyed, false otherwise.
+     */
     public boolean allBlocksDestroyed() {
         if(level == 8){
+            //-2 because there will be 2 IMPENETRABLE blocks there
             if(destroyedBlockCount == blocks.size() - 2) {
                 return true;
             }
@@ -232,21 +246,35 @@ public class Model {
             return false;
 
        }
-
+    /**
+     * Clears the list of blocks.
+     */
     public void clearBlocks(){
         blocks.clear();
     }
-
+    /**
+     * Repopulates the list of blocks from a serialized format.
+     *
+     * @param blocks The list of serialized blocks to repopulate.
+     */
     public void repopulateBlocks(ArrayList<BlockSerializable> blocks){
         for (BlockSerializable ser : blocks) {
             this.blocks.add(new Block(ser.row, ser.j, ser.type, ser.direction));
         }
     }
-
+    /**
+     * Adds a new block to the list of blocks.
+     *
+     * @param newBlock The block to add.
+     */
+    //specifically used for spawning a new spooked block once spooky block is destroyed
     public void addBlocks(Block newBlock){
         blocks.add(newBlock);
     }
-
+    /**
+     * Moves the impenetrable block horizontally based on its direction.
+     * Only applicable for the last level (level 8).
+     */
     public void moveImpenetrableBlock() {
         if(level == 8){
             for (Block block : blocks) {

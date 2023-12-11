@@ -25,8 +25,16 @@ public class View {
     private ImageView heartImageView;
     private ScaleTransition pulseAnimation;
 
-
-
+    /**
+     * Constructs a View object for the brick game.
+     *
+     * @param loadFromSave Flag indicating whether to load the game from a saved state.
+     * @param ball         The game ball.
+     * @param rect         The game paddle.
+     * @param level        The current game level.
+     * @param exhaustTail  The exhaust tail for visual effects.
+     * @param blocks       The list of game blocks.
+     */
 
 
     public View(boolean loadFromSave, Ball ball, Break rect, int level , ExhaustTail exhaustTail, CopyOnWriteArrayList<Block> blocks) {
@@ -36,6 +44,9 @@ public class View {
         initializePulseAnimation();
 
     }
+    /**
+     * Initializes the pulse animation for the heart image.
+     */
     private void initializePulseAnimation() {
         pulseAnimation = new ScaleTransition(Duration.millis(500), heartImageView);
         pulseAnimation.setFromX(1.0);
@@ -45,7 +56,14 @@ public class View {
         pulseAnimation.setAutoReverse(true);
         pulseAnimation.setCycleCount(ScaleTransition.INDEFINITE);
     }
-
+    /**
+     * Initializes the UI elements, such as buttons, labels, and the game scene.
+     *
+     * @param loadFromSave Flag indicating whether to load the game from a saved state.
+     * @param ball         The game ball.
+     * @param rect         The game paddle.
+     * @param blocks       The list of game blocks.
+     */
     public void initUI(boolean loadFromSave, Ball ball, Break rect, CopyOnWriteArrayList<Block> blocks) {
         penaltyLabel = new Label("PENALTY TIME");
         penaltyLabel.setTranslateX(200); // Set X position
@@ -70,9 +88,6 @@ public class View {
         levelLabel = new Label("Level: " + level);
         levelLabel.setTranslateY(20);
 
-
-//        heartLabel = new Label("Heart : " + heart);
-//        heartLabel.setTranslateX(sceneWidth  - 70);
 
         // Add elements to root pane
         root = new Pane();
@@ -104,6 +119,9 @@ public class View {
         scene = new Scene(root, sceneWidth , sceneHeigt );
         scene.getStylesheets().add("style.css");
     }
+    /**
+     * Updates the exhaust tail visual effects.
+     */
     public void updateExhaustTail() {
         exhaustTail.update(); // Update exhaust tail
         for (ImageView particle : exhaustTail.getParticles()) {
@@ -112,6 +130,11 @@ public class View {
             }
         }
     }
+    /**
+     * Adds a new block to the root pane.
+     *
+     * @param spook The block to add.
+     */
     public void addBlockToRoot(Block spook) {
         Platform.runLater(() -> {
             root.getChildren().add(spook.rect);
@@ -119,50 +142,102 @@ public class View {
     }
 
 
-    
 
+    /**
+     * Gets the game scene.
+     *
+     * @return The game scene.
+     */
     public Scene getScene() {
         return scene;
     }
+    /**
+     * Gets the "Load Game" button.
+     *
+     * @return The "Load Game" button.
+     */
     public Button getLoadButton() {
         return load;
     }
+    /**
+     * Gets the "Start New Game" button.
+     *
+     * @return The "Start New Game" button.
+     */
 
     public Button getNewGameButton() {
         return newGame;
     }
+    /**
+     * Sets the visibility of the penalty label.
+     *
+     * @param visible True to make the penalty label visible, false otherwise.
+     */
     public void setPenaltyLabelVisibility(boolean visible) {
         penaltyLabel.setVisible(visible);
     }
+    /**
+     * Sets the visibility of the pause label.
+     *
+     * @param visible True to make the pause label visible, false otherwise.
+     */
     public void setPauseLabelLabelVisibility(boolean visible) {
         pauseLabel.setVisible(visible);
     }
+    /**
+     * Sets the visibility of the "Load Game" button.
+     *
+     * @param visible True to make the "Load Game" button visible, false otherwise.
+     */
     public void setLoadButtonVisibility(boolean visible) {
         load.setVisible(visible);
     }
-
+    /**
+     * Sets the visibility of the "Start New Game" button.
+     *
+     * @param visible True to make the "Start New Game" button visible, false otherwise.
+     */
     public void setNewGameButtonVisibility(boolean visible) {
         newGame.setVisible(visible);
     }
+    /**
+     * Adds a node to the root pane.
+     *
+     * @param node The node to add.
+     */
     public void addToRoot(Node node) {
         Platform.runLater(() -> root.getChildren().add(node));
     }
+    /**
+     * Removes a style class from the root pane.
+     *
+     * @param styleClass The style class to remove.
+     */
     public void removeStyleClassFromRoot(String styleClass) {
         Platform.runLater(() -> root.getStyleClass().remove(styleClass));
     }
-
+    /**
+     * Adds a style class to the root pane.
+     *
+     * @param styleClass The style class to add.
+     */
     public void addStyleClassToRoot(String styleClass) {
         Platform.runLater(() -> root.getStyleClass().add(styleClass));
     }
-
-
-
-
-
+    /**
+     * Updates the player score display.
+     *
+     * @param score The updated score.
+     */
 
     public void updateScore(int score) {
         scoreLabel.setText("Score: " + score);
     }
+    /**
+     * Updates the player heart display.
+     *
+     * @param heart The updated number of hearts.
+     */
 
     public void updateHeart(int heart) {
         switch (heart) {
@@ -183,13 +258,25 @@ public class View {
         }
 
     }
-
+    /**
+     * Updates the game level display.
+     *
+     * @param level The updated game level.
+     */
     public void updateLevel(int level) {
         levelLabel.setText("Level: " + level);
     }
+    /**
+     * Updates the penalty time display.
+     *
+     * @param i The penalty time in seconds.
+     */
     public void updatePenaltyTime(int i) {
         penaltyLabel.setText("Penalty: " + i + " seconds");
     }
+    /**
+     * Removes all elements from the root pane.
+     */
     public void removeAllElementsFromRoot() {
         Platform.runLater(() -> {
             root.getChildren().clear(); // Remove all children nodes

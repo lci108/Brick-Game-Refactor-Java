@@ -6,8 +6,18 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
-
+/**
+ * The Score class is responsible for displaying scores, messages, and game-over/win screens in the game.
+ */
 public class Score {
+    /**
+     * Displays a score at the specified position on the game view.
+     *
+     * @param x     The X-coordinate for displaying the score.
+     * @param y     The Y-coordinate for displaying the score.
+     * @param score The score value to be displayed.
+     * @param view  The View object representing the game view.
+     */
     public void show(final double x, final double y, int score, final View view) {
         String sign = score >= 0 ? "+" : "";
         final Label label = new Label(sign + score);
@@ -27,7 +37,12 @@ public class Score {
         }
         timeline.play();
     }
-
+    /**
+     * Displays a message at a specific position on the game view.
+     *
+     * @param message The message to be displayed.
+     * @param view    The View object representing the game view.
+     */
     public void showMessage(String message, final View view) {
         final Label label = new Label(message);
         label.setTranslateX(220);
@@ -47,6 +62,13 @@ public class Score {
         timeline.play();
     }
 
+    /**
+     * Displays the game-over screen with an option to restart the game.
+     *
+     * @param controller The Controller object managing the game logic.
+     * @param view       The View object representing the game view.
+     */
+
     public void showGameOver(final Controller controller , final View view) {
         Platform.runLater(() -> {
 
@@ -62,6 +84,11 @@ public class Score {
 
         });
     }
+    /**
+     * Displays the win screen.
+     *
+     * @param view The View object representing the game view.
+     */
 
     public void showWin(final View view) {
         Platform.runLater(() -> {
