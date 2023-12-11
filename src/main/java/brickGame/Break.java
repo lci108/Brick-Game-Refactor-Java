@@ -1,11 +1,11 @@
 package brickGame;
 
+import Controller.Controller;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-import static brickGame.Controller.*;
-import static brickGame.Main.*;
+import static Controller.Controller.*;
 
 /**
  * The Break class represents the paddle in the brick game.

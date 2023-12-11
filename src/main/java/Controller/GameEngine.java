@@ -1,4 +1,4 @@
-package brickGame;
+package Controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

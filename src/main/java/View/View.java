@@ -1,5 +1,9 @@
-package brickGame;
+package View;
 
+import brickGame.Ball;
+import brickGame.Block;
+import brickGame.Break;
+import brickGame.ExhaustTail;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -13,7 +17,7 @@ import javafx.util.Duration;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static brickGame.Controller.*;
+import static Controller.Controller.*;
 
 public class View {
     private Pane root;
