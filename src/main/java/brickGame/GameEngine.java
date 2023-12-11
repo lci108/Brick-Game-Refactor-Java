@@ -3,7 +3,10 @@ package brickGame;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-
+/**
+ * The GameEngine class orchestrates the game loop and provides a framework for game-related actions.
+ * It manages the update, initialization, physics calculations, and time tracking of a game.
+ */
 public class GameEngine {
 
     private OnAction onAction;
@@ -77,7 +80,7 @@ public class GameEngine {
         timeTimeline.setCycleCount(Timeline.INDEFINITE);
         timeTimeline.play();
     }
-
+    /** Callback interface for game-related actions. */
     public interface OnAction {
         void onUpdate();
         void onInit();

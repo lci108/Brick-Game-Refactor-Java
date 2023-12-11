@@ -29,7 +29,9 @@ public class LoadSave {
     public double           vX;
     public ArrayList<BlockSerializable> blocks = new ArrayList<BlockSerializable>();
 
-
+    /**
+     * Reads the saved game state from the specified file path using object deserialization.
+     */
     public void read() {
 
 
@@ -57,10 +59,6 @@ public class LoadSave {
             isGoldStauts = inputStream.readBoolean();
             goDownBall = inputStream.readBoolean();
             goRightBall = inputStream.readBoolean();
-//            colideToBreak = inputStream.readBoolean();
-//            colideToBreakAndMoveToRight = inputStream.readBoolean();
-//            colideToRightWall = inputStream.readBoolean();
-//            colideToLeftWall = inputStream.readBoolean();
             colideToRightBlock = inputStream.readBoolean();
             colideToBottomBlock = inputStream.readBoolean();
             colideToLeftBlock = inputStream.readBoolean();

@@ -2,7 +2,6 @@ package brickGame;
 
 
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
@@ -10,6 +9,10 @@ import java.io.Serializable;
 import java.util.Random;
 
 import static brickGame.Ball.ballRadius;
+/**
+ * The Block class represents the blocks in the brick game. Blocks can have different types and may be destroyed by the ball.
+ * This class implements Serializable to allow for object serialization for loadsave
+ */
 
 public class Block implements Serializable {
     private static final Block block = new Block(-1, -1,99 ,0);
@@ -81,7 +84,14 @@ public class Block implements Serializable {
     public static final int BLOCK_SPOOKED = 105;
 
     public static final int BLOCK_IMPENETRABLE = 106;
-
+    /**
+     * Constructs a Block object with the specified row, column, type, and direction.
+     *
+     * @param row       The row of the block.
+     * @param column    The column of the block.
+     * @param type      The type of the block.
+     * @param direction The direction of the block 0 for normal blocks , 1 for going right and 0 for going left (only applicable to impenetrable blocks)
+     */
 
     public Block(int row, int column, int type , int direction) {
         this.row = row;
@@ -139,13 +149,13 @@ public class Block implements Serializable {
 
 
 
-
-
-
-
-
-    // Assuming the blocks are axis-aligned rectangles and the ball is a circle
-    public int checkHitToBlock(double xBall, double yBall ) {
+    /**
+     * Checks for a collision between the ball and the block.
+     *
+     * @param xBall The x-coordinate of the ball.
+     * @param yBall The y-coordinate of the ball.
+     * @return The hit code indicating the type of collision, or {@link #NO_HIT} if no collision occurred.
+     */    public int checkHitToBlock(double xBall, double yBall ) {
 
         if (isDestroyed) {
             return NO_HIT;
@@ -183,13 +193,19 @@ public class Block implements Serializable {
 
         return NO_HIT; // No collision occurred
     }
-
-
-
-
+    /**
+     * Gets the padding at the top of the blocks.
+     *
+     * @return The padding at the top of the blocks.
+     */
     public static int getPaddingTop() {
         return block.paddingTop;
     }
+    /**
+     * Gets the horizontal padding for the blocks.
+     *
+     * @return The horizontal padding for the blocks.
+     */
 
     public static int getPaddingH() {
         return block.paddingH;

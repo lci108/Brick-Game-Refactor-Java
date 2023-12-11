@@ -3,7 +3,10 @@ package brickGame;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-
+/**
+ * The Ball class represents the game ball in the brick game.
+ * It extends the Circle class and includes methods for handling ball physics and collisions.
+ */
 public class Ball extends Circle {
     public static final int ballRadius = 10;
 
@@ -68,20 +71,41 @@ public class Ball extends Circle {
 
     private boolean hitSceneBottom = false;
 
-    // Updated constructor
+    public boolean isExtraIsActive() {
+        return ExtraIsActive;
+    }
+
+    public void setExtraIsActive(boolean extraIsActive) {
+        ExtraIsActive = extraIsActive;
+    }
+
+    private boolean ExtraIsActive = true;
+
+
+    /**
+     * Constructs a Ball object with the specified radius and initial position.
+     *
+     * @param radius    The radius of the ball.
+     * @param initialX  The initial x-coordinate of the ball.
+     * @param initialY  The initial y-coordinate of the ball.
+     */
     public Ball( double radius, double initialX, double initialY) {
         super(radius, new ImagePattern(new Image("ball.png")));
         this.setCenterX(initialX);
         this.setCenterY(initialY);
     }
 
+    /**
+     * Resets the flag indicating that the ball hit the bottom of the scene.
+     */
+
     public void resetHitBottomFlag() {
         hitSceneBottom = false;
     }
-
+    /**
+     * Sets the physics for the ball, including collisions with the scene boundaries and the break.
+     */
     public void setPhysicsToBall() {
-        Model model = new Model();
-        Controller controller = new Controller();
 
         // Use variables from Main class
         this.vX = 3;
@@ -166,9 +190,11 @@ public class Ball extends Circle {
         }
 
         }
-
-
-
+    /**
+     * Updates the ball based on the specified hit code.
+     *
+     * @param hitCode The hit code indicating the type of collision.
+     */
 
     public void onUpdateBall(int hitCode) {
         // Collision logic based on hitCode
@@ -189,7 +215,12 @@ public class Ball extends Circle {
 
     }
 
-
+    /**
+     * Calculates the horizontal velocity based on the collision relation.
+     *
+     * @param relation The collision relation.
+     * @return The calculated horizontal velocity.
+     */
     private double calculateVelocityX(double relation) {
         if (Math.abs(relation) <= 0.3) {
             return Math.abs(relation);
@@ -199,6 +230,9 @@ public class Ball extends Circle {
             return (Math.abs(relation) * 2) ;
         }
     }
+    /**
+     * Resets the collision flags for the ball.
+     */
 
     public  void resetColideFlags() {
         this.colideToRightBlock = false;
@@ -206,17 +240,27 @@ public class Ball extends Circle {
         this.colideToLeftBlock = false;
         this.colideToTopBlock = false;
     }
-
+    /**
+     * Gets the x-coordinate of the ball.
+     *
+     * @return The x-coordinate of the ball.
+     */
     public double getBallX() {
         return this.getCenterX();
     }
-
-
-
+    /**
+     * Gets the y-coordinate of the ball.
+     *
+     * @return The y-coordinate of the ball.
+     */
     public double getBallY() {
         return this.getCenterY();
     }
-
+    /**
+     * Checks if the ball hit the bottom of the scene.
+     *
+     * @return True if the ball hit the bottom, false otherwise.
+     */
     public boolean hasHitSceneBottom() {
         return hitSceneBottom;
     }

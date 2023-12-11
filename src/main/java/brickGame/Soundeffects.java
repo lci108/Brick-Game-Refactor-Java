@@ -16,7 +16,9 @@ public class Soundeffects {
     private final MediaPlayer winPlayer;
     private final MediaPlayer gameOverPlayer;
 
-
+    /**
+     * Constructs a Soundeffects object, initializing MediaPlayer instances for each sound effect.
+     */
     public Soundeffects() {
         blockHitPlayer = createPlayer("block_hit.mp3");
         itemCatchPlayer = createPlayer("item_catch.mp3");
@@ -28,7 +30,12 @@ public class Soundeffects {
         winPlayer = createPlayer("win.mp3");
         gameOverPlayer = createPlayer("gameOver.mp3");
     }
-
+    /**
+     * Creates a MediaPlayer for a given sound file.
+     *
+     * @param soundFileName The name of the sound file.
+     * @return A MediaPlayer instance for the specified sound file.
+     */
     private MediaPlayer createPlayer(String soundFileName) {
         URL resource = getClass().getResource("/" + soundFileName);
         if (resource != null) {
@@ -39,7 +46,9 @@ public class Soundeffects {
             return null;
         }
     }
-
+    /**
+     * Plays the sound associated with a block hit.
+     */
     private void playSound(MediaPlayer player) {
         if (player != null) {
             try {
