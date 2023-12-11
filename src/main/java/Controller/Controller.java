@@ -1,4 +1,8 @@
-package brickGame;
+package Controller;
+import Model.Model;
+import View.View;
+import View.Score;
+import brickGame.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;

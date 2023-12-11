@@ -1,11 +1,14 @@
-package brickGame;
+package Model;
 
+
+import brickGame.Block;
+import brickGame.BlockSerializable;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static brickGame.Controller.sceneWidth;
+import static Controller.Controller.sceneWidth;
 
 
 public class Model {
