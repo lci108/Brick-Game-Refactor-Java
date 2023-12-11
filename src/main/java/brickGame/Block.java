@@ -16,73 +16,149 @@ import static brickGame.Ball.ballRadius;
 
 public class Block implements Serializable {
     private static final Block block = new Block(-1, -1,99 ,0);
-
+    /**
+     * Gets the direction of the block.
+     *
+     * @return The direction of the block.
+     */
     public int getDirection() {
         return direction;
     }
-
+    /**
+     * Sets the direction of the block.
+     *
+     * @param direction The new direction of the block.
+     */
     public void setDirection(int direction) {
         this.direction = direction;
     }
-
+    /**
+     * Represents the direction of a block.
+     */
     public int direction;
 
+    /**
+     * Represents the row position of a block.
+     */
     public int row;
+    /**
+     * Represents the column position of a block.
+     */
     public int column;
 
-
+    /**
+     * Indicates whether the block is destroyed.
+     */
     public boolean isDestroyed = false;
-
+    /**
+     * Represents the type of the block.
+     */
     public int type;
-
+    /**
+     * Gets the x-coordinate of the block.
+     *
+     * @return The x-coordinate of the block.
+     */
     public int getX() {
         return x;
     }
-
+    /**
+     * Sets the x-coordinate of the block.
+     *
+     * @param x The new x-coordinate of the block.
+     */
     public void setX(int x) {
         this.x = x;
     }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
+    /** x-coordinate of block. */
     public int x;
+    /** y-coordinate of block. */
+
     public int y;
 
+    /**
+     * Width of the block.
+     */
     private final int width = 80;
+
+    /**
+     * Height of the block.
+     */
     private final int height = 30;
+
+    /**
+     * Padding at the top of the block.
+     */
     private final int paddingTop = height * 2;
+
+    /**
+     * Horizontal padding for the block.
+     */
     private final int paddingH = 40;
 
+    /**
+     * Gets the rectangle representing the object.
+     *
+     * @return The rectangle representing the object.
+     */
     public Rectangle getRect() {
         return rect;
     }
-
+    /** The rectangle representing the object. */
     public Rectangle rect;
 
 
+    /** Represents no hit. */
     public static final int NO_HIT = -1;
-    public static final int HIT_RIGHT = 0;
-    public static final int HIT_BOTTOM = 1;
-    public static final int HIT_LEFT = 2;
-    public static final int HIT_TOP = 3;
 
+    /** Represents a hit on the right side. */
+    public static final int HIT_RIGHT = 0;
+
+    /** Represents a hit at the bottom. */
+    public static final int HIT_BOTTOM = 1;
+
+    /** Represents a hit on the left side. */
+    public static final int HIT_LEFT = 2;
+
+    /** Represents a hit at the top. */
+    public static final int HIT_TOP = 3;
+    /**
+     * Represents a normal block.
+     */
     public static int BLOCK_NORMAL = 99;
+    /**
+     * Represents a chocolate block (but changed to strawberry graphics)
+     */
     public static int BLOCK_CHOCO = 100;
+    /**
+     * Represents a star block.
+     */
     public static int BLOCK_STAR = 101;
+    /**
+     * Represents a heart block.
+     */
     public static int BLOCK_HEART = 102;
+
+    /**
+     * Represents a mystery block.
+     */
 
     public static int BLOCK_MYSTERY =103;
 
+    /**
+     * Represents a spooky block.
+     */
+
     public static final int BLOCK_SPOOKY = 104;
 
-    public static final int BLOCK_SPOOKED = 105;
+    /**
+     * Represents a spooked block.
+     */
 
+    public static final int BLOCK_SPOOKED = 105;
+    /**
+     * Represents an impenetrable block.
+     */
     public static final int BLOCK_IMPENETRABLE = 106;
     /**
      * Constructs a Block object with the specified row, column, type, and direction.
@@ -210,11 +286,19 @@ public class Block implements Serializable {
     public static int getPaddingH() {
         return block.paddingH;
     }
-
+    /**
+     * Gets the height of the block.
+     *
+     * @return The height of the block.
+     */
     public static int getHeight() {
         return block.height;
     }
-
+    /**
+     * Gets the width of the block.
+     *
+     * @return The width of the block.
+     */
     public static int getWidth() {
         return block.width;
     }

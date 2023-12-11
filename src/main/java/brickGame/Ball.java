@@ -9,57 +9,110 @@ import javafx.scene.shape.Circle;
  * It extends the Circle class and includes methods for handling ball physics and collisions.
  */
 public class Ball extends Circle {
+    /**
+     * The radius of the ball.
+     */
     public static final int ballRadius = 10;
 
     private double vX;
     private double vY;
-
+    /**
+     * Sets the status of the ball moving downwards.
+     *
+     * @param GODOWNBALL The new status of the ball moving downwards.
+     */
     public  void setGoDownBall(boolean GODOWNBALL) {
         this.goDownBall = GODOWNBALL;
     }
 
     private  boolean goDownBall = true;
     private  boolean goRightBall = false;
-
+    /**
+     * Checks the downward movement status of the ball.
+     *
+     * @return {@code true} if the ball is moving downward, {@code false} otherwise.
+     */
     public boolean isGoDownBall() {
         return this.goDownBall;
     }
-
+    /**
+     * Checks the rightward movement status of the ball.
+     *
+     * @return {@code true} if the ball is moving rightward, {@code false} otherwise.
+     */
     public boolean isGoRightBall() {
         return this.goRightBall;
     }
 
+    /**
+     * Sets the status of the ball moving to the right.
+     *
+     * @param goRightBall The new status of the ball moving to the right.
+     */
     public  void setGoRightBall(boolean goRightBall) {
         this.goRightBall = goRightBall;
     }
-
+    /**
+     * Checks if the ball collides with the right side of a block.
+     *
+     * @return {@code true} if the ball collides with the right side of a block, {@code false} otherwise.
+     */
     public  boolean isColideToRightBlock() {
         return this.colideToRightBlock;
     }
-
+    /**
+     * Sets the collision status with the right block.
+     *
+     * @param colideToRightBlock The new collision status with the right block.
+     */
     public void setColideToRightBlock(boolean colideToRightBlock) {
         this.colideToRightBlock = colideToRightBlock;
     }
-
+    /**
+     * Checks if the ball collides with the bottom side of a block.
+     *
+     * @return {@code true} if the ball collides with the bottom side of a block, {@code false} otherwise.
+     */
     public boolean isColideToBottomBlock() {
         return this.colideToBottomBlock;
     }
-
+    /**
+     * Sets the collision status with the bottom block.
+     *
+     * @param colideToBottomBlock The new collision status with the bottom block.
+     */
     public void setColideToBottomBlock(boolean colideToBottomBlock) {
         this.colideToBottomBlock = colideToBottomBlock;
     }
-
+    /**
+     * Checks if the ball collides with the left side of a block.
+     *
+     * @return {@code true} if the ball collides with the left side of a block, {@code false} otherwise.
+     */
     public boolean isColideToLeftBlock() {
         return this.colideToLeftBlock;
     }
-
+    /**
+     * Sets the collision status with the left block.
+     *
+     * @param colideToLeftBlock The new collision status with the left block.
+     */
     public void setColideToLeftBlock(boolean colideToLeftBlock) {
         this.colideToLeftBlock = colideToLeftBlock;
     }
-
+    /**
+     * Checks if the ball collides with the top side of a block.
+     *
+     * @return {@code true} if the ball collides with the top side of a block, {@code false} otherwise.
+     */
     public boolean isColideToTopBlock() {
         return this.colideToTopBlock;
     }
+    /**
+     * Sets the collision status with the top block.
+     *
+     * @param colideToTopBlock The new collision status with the top block.
+     */
 
     public void setColideToTopBlock(boolean colideToTopBlock) {
         this.colideToTopBlock = colideToTopBlock;
@@ -72,15 +125,6 @@ public class Ball extends Circle {
 
     private boolean hitSceneBottom = false;
 
-    public boolean isExtraIsActive() {
-        return ExtraIsActive;
-    }
-
-    public void setExtraIsActive(boolean extraIsActive) {
-        ExtraIsActive = extraIsActive;
-    }
-
-    private boolean ExtraIsActive = true;
 
 
     /**
