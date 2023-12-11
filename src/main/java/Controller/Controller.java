@@ -26,18 +26,44 @@ import static brickGame.Block.*;
 
 
 
-
+/**
+ * The Controller class responsible for handling user input and managing the game.
+ * Extends Application to create a JavaFX application and implements EventHandler for key events
+ * and GameEngine.OnAction for game actions.
+ */
 public class Controller extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
     private ExhaustTail exhaustTail;
     private Soundeffects Soundeffects;
-    public static int breakWidth     = 200;
-    public static int breakHeight    = 30;
+    /**
+     * The width of the break.
+     */
+    public static int breakWidth = 200;
 
+    /**
+     * The height of the break.
+     */
+    public static int breakHeight = 30;
+
+    /**
+     * The width of the scene.
+     */
     public static int sceneWidth = 500;
+
+    /**
+     * The height of the scene.
+     */
     public static int sceneHeigt = 700;
 
-    public static final int LEFT  = 1;
+    /**
+     * Represents the left direction.
+     */
+    public static final int LEFT = 1;
+
+    /**
+     * Represents the right direction.
+     */
     public static final int RIGHT = 2;
+
 
     private Ball ball;
 
@@ -51,8 +77,16 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
     private long goldTime = 0;
 
     private GameEngine engine;
-    public static String savePath    = "D:/save/save.mdds";
+    /**
+     * The file path for saving and loading game data.
+     */
+    public static String savePath = "D:/save/save.mdds";
+
+    /**
+     * The directory path for saving and loading game data.
+     */
     public static String savePathDir = "D:/save/";
+
 
 
     private final CopyOnWriteArrayList<Bonus> chocos = new CopyOnWriteArrayList<>();
@@ -240,11 +274,9 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
         penaltyTimeline.play();
     }
 
-
-
-
-
-
+    /**
+     * Flag indicating whether the break is stopped.
+     */
     public static boolean breakStopped = false;
 
     private void initBall() {

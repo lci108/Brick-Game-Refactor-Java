@@ -6,10 +6,24 @@ import java.io.Serializable;
  * It is used to serialize and deserialize block information.
  */
 public class BlockSerializable implements Serializable {
+    /**
+     * Represents the row position of the block.
+     */
     public final int row;
+
+    /**
+     * Represents the j value.
+     */
     public final int j;
+
+    /**
+     * Represents the type of the block.
+     */
     public final int type;
 
+    /**
+     * Represents the direction of the block.
+     */
     public int direction;
     /**
      * Constructs a BlockSerializable object with the specified row, column, type, and direction.

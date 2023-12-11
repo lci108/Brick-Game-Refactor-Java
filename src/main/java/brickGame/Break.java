@@ -12,33 +12,61 @@ import static Controller.Controller.*;
  * It extends Rectangle and includes methods for moving the paddle.
  */
 public class Break extends Rectangle {
+    private static double xBreak;
 
 
+    /**
+     * Gets the x-coordinate of the break.
+     *
+     * @return The x-coordinate of the break.
+     */
     public static double getxBreak() {
         return xBreak;
     }
 
+    /**
+     * Sets the x-coordinate of the break.
+     *
+     * @param xBreak The new x-coordinate of the break.
+     */
     public static void setxBreak(double xBreak) {
         Break.xBreak = xBreak;
     }
 
+    /**
+     * Sets the y-coordinate of the break.
+     *
+     * @param yBreak The new y-coordinate of the break.
+     */
     public static void setyBreak(double yBreak) {
         Break.yBreak = yBreak;
     }
 
+    /**
+     * Sets the x-coordinate of the center of the break.
+     *
+     * @param centerBreakx The new x-coordinate of the center of the break.
+     */
     public static void setCenterBreakx(double centerBreakx) {
         Break.centerBreakx = centerBreakx;
     }
 
-    private static double xBreak;
-
+    /**
+     * Gets the y-coordinate of the break.
+     *
+     * @return The y-coordinate of the break.
+     */
     public static double getyBreak() {
         return yBreak;
     }
 
     private static double yBreak;
     private static int breakWidth;
-
+    /**
+     * Gets the x-coordinate of the center of the break.
+     *
+     * @return The x-coordinate of the center of the break.
+     */
     public static double getCenterBreakx() {
         return centerBreakx;
     }

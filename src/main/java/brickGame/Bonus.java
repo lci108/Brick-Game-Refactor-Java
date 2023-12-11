@@ -13,14 +13,32 @@ import java.util.Random;
  * The Bonus class represents a bonus object in the brick game.
  * It is used to model bonuses that appear when certain blocks are destroyed.
  */
-public class Bonus implements Serializable {
-    public Rectangle block;
+public class Bonus implements Serializable {/**
+ * Represents the rectangle of the bonus block.
+ */
+public Rectangle block;
 
+    /**
+     * Represents the x-coordinate of the bonus block.
+     */
     public double x;
+
+    /**
+     * Represents the y-coordinate of the bonus block.
+     */
     public double y;
+
+    /**
+     * Represents the time when the bonus block was created.
+     */
     public long timeCreated;
+
+    /**
+     * Represents whether the bonus block has been taken or not.
+     */
     public boolean taken = false;
 
+    /** Type of the block. */
     private final int blockType;
 
     /**
