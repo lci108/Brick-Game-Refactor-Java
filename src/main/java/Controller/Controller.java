@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Random;
 
 import static brickGame.Block.*;
+import brickGame.Block;
 
 
 
@@ -381,7 +382,7 @@ public class Controller extends Application implements EventHandler<KeyEvent>, G
         model.setLevel(loadSave.level);
         model.setScore(loadSave.score);
         model.setHeart(loadSave.heart);
-        model.setDestroyedBlockCount(loadSave.destroyedBlockCount);
+        model.setDestroyedBlockCount(0);
         ball.setCenterX(loadSave.xBall);
         ball.setCenterY(loadSave.yBall);
         Break.setxBreak(loadSave.xBreak);
