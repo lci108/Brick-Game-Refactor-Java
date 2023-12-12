@@ -7,6 +7,8 @@ import javafx.scene.shape.Circle;
 /**
  * The Ball class represents the game ball in the brick game.
  * It extends the Circle class and includes methods for handling ball physics and collisions.
+ * Refactored from the main class from original code.
+ * Link: <a href="https://github.com/kooitt/CourseworkGame/blob/master/src/main/java/brickGame/Main.java">Main</a>
  */
 public class Ball extends Circle {
     /**

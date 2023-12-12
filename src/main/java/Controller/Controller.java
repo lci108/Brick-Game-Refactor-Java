@@ -31,6 +31,8 @@ import brickGame.Block;
  * The Controller class responsible for handling user input and managing the game.
  * Extends Application to create a JavaFX application and implements EventHandler for key events
  * and GameEngine.OnAction for game actions.
+ * Refactored from the main class from original code.
+ * Link: <a href="https://github.com/kooitt/CourseworkGame/blob/master/src/main/java/brickGame/Main.java">Main</a>
  */
 public class Controller extends Application implements EventHandler<KeyEvent>, GameEngine.OnAction {
     private ExhaustTail exhaustTail;

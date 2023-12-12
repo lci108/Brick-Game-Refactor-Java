@@ -10,6 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static Controller.Controller.sceneWidth;
 
+/**
+ * The Model class encapsulates the logic for setting up the game board based on the player's level and determining the type of blocks to be created.
+ * Refactored from the main class from original code.
+ * Link: <a href="https://github.com/kooitt/CourseworkGame/blob/master/src/main/java/brickGame/Main.java">Main</a>
+ */
 
 public class Model {
     public int getLevel() {
@@ -100,6 +105,7 @@ public class Model {
     /**
      * Sets up the initial block configuration based on the current level.
      */
+
     public void setUpBoard(){
         switch (level) {
             case 1: //horizontal line

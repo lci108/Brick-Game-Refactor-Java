@@ -10,6 +10,8 @@ import static Controller.Controller.*;
 /**
  * The Break class represents the paddle in the brick game.
  * It extends Rectangle and includes methods for moving the paddle.
+ * Refactored from the main class from original code.
+ * Link: <a href="https://github.com/kooitt/CourseworkGame/blob/master/src/main/java/brickGame/Main.java">Main</a>
  */
 public class Break extends Rectangle {
     private static double xBreak;
