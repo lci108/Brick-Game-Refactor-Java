@@ -9,7 +9,7 @@ Follow these clear, step-by-step instructions to compile the code and produce th
 
 ### 1. Download Zip File
 
-Download the zip file containing the source code from the [repository]([#your-repository-link](https://github.com/lci108/COMP2042_CW_efycl17)). You can find the "Download ZIP" option on the main repository page.
+Download the zip file containing the source code from the [repository](https://github.com/lci108/COMP2042_CW_efycl17). You can find the "Download ZIP" option on the main repository page.
 
 ### 2. Extract to Your Desired Location
 
