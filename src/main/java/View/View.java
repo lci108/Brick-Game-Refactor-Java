@@ -38,6 +38,8 @@ public class View {
      * @param level        The current game level.
      * @param exhaustTail  The exhaust tail for visual effects.
      * @param blocks       The list of game blocks.
+     * Refactored from the main class from original code.
+     * Link: <a href="https://github.com/kooitt/CourseworkGame/blob/master/src/main/java/brickGame/Main.java">Main</a>
      */
 
 
