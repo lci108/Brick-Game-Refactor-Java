@@ -23,16 +23,26 @@ Ensure you have IntelliJ IDEA installed on your system. You can download the lat
 
 Open IntelliJ IDEA and navigate to "File" -> "Open" to locate and open the downloaded Brick Breaker game project.
 
-### 5. Configure Project Libraries
+### 5. Download JavaFX Libraries from Gluon
+
+To run the enhanced Brick Breaker game, you need to download the JavaFX libraries from the Gluon website.
+
+1. Open your web browser and go to the [Gluon JavaFX download page](https://gluonhq.com/products/javafx/).
+2. Download the JavaFX SDK that matches your operating system. Make sure to download the version compatible with your Java version.
+3. Extract the downloaded JavaFX SDK to your preferred location on your local machine.
+
+### 6. Configure Project Libraries in IntelliJ
+
+Now that you have the JavaFX libraries downloaded, you'll need to configure your IntelliJ project to include them.
 
 1. Navigate to "File" -> "Project Structure."
 2. In the Project Structure window, select "Libraries" under "Project Settings."
 3. Click the "+" icon to add a new library.
 4. Choose "Java" to add a Java library.
-5. Paste the path of the "lib" directory in the downloaded Brick Breaker game where the required JAR files are located.
-6. Select the "lib" directory and press "OK" to add it as a library.
-
-### 6. Enjoy the Game
+5. Browse to the location where you extracted the JavaFX SDK and select the `lib` directory inside it.
+6. Press "OK" to add the JavaFX library.
+ 
+### 7. Enjoy the Game
 
 Your project is now configured! You can now run the game by executing the main class. Simply click "Run" in IntelliJ, and enjoy the enhanced Brick Breaker gaming experience.
 
